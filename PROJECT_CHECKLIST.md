@@ -9,19 +9,19 @@
 
 ## 🔧 Stack escolhida
 
--   [ ] Framework:
--   [ ] UI Library:
--   [ ] Gerenciamento de Estado:
--   [ ] Testes Unitários:
--   [ ] Testes E2E:
--   [ ] Padrão Arquitetural:
+-   [x] Framework:
+-   [x] UI Library:
+-   [x] Gerenciamento de Estado:
+-   [x] Testes Unitários:
+-   [x] Testes E2E:
+-   [x] Padrão Arquitetural:
 
 ------------------------------------------------------------------------
 
 # 🧱 2. SETUP DO PROJETO
 
--   [ ] Criar projeto
--   [ ] Configurar ESLint
+-   [x] Criar projeto
+-   [x] Configurar ESLint
 -   [ ] Configurar Prettier
 -   [ ] Configurar Husky (pre-commit)
 -   [ ] Configurar alias de imports
