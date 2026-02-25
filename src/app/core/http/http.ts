@@ -22,9 +22,14 @@ export class HttpService<T> implements IHttpService<T> {
     });
   }
 
-  post(url: string, data: T): Observable<void> {
+  post(url: string, item: T): Observable<void> {
     return new Observable((observer) => {
-      this.storageService.set(url, data);
+      const response = this.storageService.get(url);
+      if (response) {
+        this.storageService.set(url, { data: [...response.data, item] });
+      } else {
+        this.storageService.set(url, { data: [item] });
+      }
 
       observer.next();
       observer.complete();

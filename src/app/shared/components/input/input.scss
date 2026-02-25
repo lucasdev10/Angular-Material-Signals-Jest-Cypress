@@ -1,0 +1,92 @@
+.app-input {
+  display: block;
+  width: 100%;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #333);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border, #ccc);
+  border-radius: 4px;
+  background: var(--color-background, #fff);
+  transition: all 0.2s;
+}
+
+.input-wrapper.focused {
+  border-color: var(--color-primary, #2196f3);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.input-wrapper.error {
+  border-color: var(--color-error, #f44336);
+}
+
+.input-wrapper.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-field {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--color-text-primary, #333);
+  outline: none;
+}
+
+.input-field:disabled {
+  cursor: not-allowed;
+}
+
+.input-icon {
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-secondary, #666);
+}
+
+.input-icon:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.input-helper {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #666);
+}
+
+.input-error {
+  font-size: 0.75rem;
+  color: var(--color-error, #f44336);
+}
+
+.input-counter {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #666);
+  text-align: right;
+}
+
+.input-counter.error {
+  color: var(--color-error, #f44336);
+}
+
+.required-indicator {
+  color: var(--color-error, #f44336);
+  margin-left: 0.25rem;
+}

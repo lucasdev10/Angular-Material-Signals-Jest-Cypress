@@ -1,0 +1,122 @@
+<div class="input-container">
+  <!-- Label -->
+  @if (label) {
+    <label class="input-label" [for]="inputId" [class.required]="required">
+      {{ label }}
+
+      @if (required) {
+        <span class="required-indicator" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  <!-- Input wrapper -->
+  <div
+    class="input-wrapper"
+    [class.focused]="focused"
+    [class.error]="hasError"
+    [class.disabled]="disabled"
+  >
+    <!-- Ícone à esquerda -->
+    @if (leftIcon) {
+      <button
+        type="button"
+        class="input-icon input-icon-left"
+        [disabled]="!leftIcon.clickable"
+        (click)="onIconClick(leftIcon)"
+        [attr.aria-label]="leftIcon.name"
+      >
+        <i [class]="'icon-' + leftIcon.name" aria-hidden="true"></i>
+      </button>
+    }
+
+    <!-- Input element -->
+    <input
+      #inputElement
+      class="input-field"
+      [id]="inputId"
+      [type]="currentType"
+      [value]="value"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [required]="required"
+      [min]="min"
+      [max]="max"
+      [attr.minlength]="minLength"
+      [attr.maxlength]="maxLength"
+      [pattern]="pattern"
+      [autocomplete]="autocomplete"
+      [attr.aria-describedby]="getAriaDescribedByValue()"
+      [attr.aria-invalid]="hasError"
+      [attr.aria-required]="required"
+      (input)="onInput($event)"
+      (blur)="onBlur($event)"
+      (focus)="onFocus($event)"
+      (keydown)="onKeyDown($event)"
+      (keyup)="onKeyUp($event)"
+    />
+
+    <!-- Ícone à direita -->
+    @if (rightIcon) {
+      <button
+        type="button"
+        class="input-icon input-icon-right"
+        [disabled]="!rightIcon.clickable"
+        (click)="onIconClick(rightIcon)"
+        [attr.aria-label]="rightIcon.name"
+      >
+        <i [class]="'icon-' + rightIcon.name" aria-hidden="true"></i>
+      </button>
+    }
+
+    <!-- Toggle password visibility -->
+    @if (type === 'password') {
+      <button
+        type="button"
+        class="input-icon input-icon-right password-toggle"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+      >
+        <i [class]="showPassword ? 'icon-eye-off' : 'icon-eye'" aria-hidden="true"></i>
+      </button>
+    }
+
+    <!-- Clear button -->
+    @if (clearable && value && !disabled && !readonly) {
+      <button
+        type="button"
+        class="input-icon input-icon-right clear-button"
+        (click)="clearValue()"
+        aria-label="Limpar campo"
+      >
+        <i class="icon-x" aria-hidden="true"></i>
+      </button>
+    }
+  </div>
+
+  <!-- Helper text -->
+  @if (helperText && !hasError) {
+    <div class="input-helper" [id]="helperId">
+      {{ helperText }}
+    </div>
+  }
+
+  <!-- Error messages -->
+  @if (hasError && errorMessages.length > 0) {
+    <div class="input-error" [id]="errorId" role="alert" aria-live="polite">
+      @for (error of errorMessages; track $index) {
+        <div class="error-message">
+          {{ error }}
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Character counter -->
+  @if (maxLength && showCounter) {
+    <div class="input-counter" [class.error]="(value.length || 0) > maxLength">
+      {{ value.length || 0 }} / {{ maxLength }}
+    </div>
+  }
+</div>

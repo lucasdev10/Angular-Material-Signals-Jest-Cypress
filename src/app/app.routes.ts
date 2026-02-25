@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/products', pathMatch: 'full' },
+  { path: '', redirectTo: '/product', pathMatch: 'full' },
   {
-    path: 'products',
+    path: 'product',
     loadChildren: () => import('./features/products/products.route').then((r) => r.PRODUCT_ROUTES),
   },
-  { path: '**', redirectTo: '/products' },
+  { path: '**', redirectTo: '/product' },
 ];

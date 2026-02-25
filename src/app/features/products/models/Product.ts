@@ -1,13 +1,13 @@
 export interface IProductService {
   getProducts(): IProduct[];
-  getProductById(id: number): IProduct;
+  getProductById(id: string): IProduct;
   addProduct(product: IProduct): void;
-  updateProduct(id: number, product: IProduct): void;
-  deleteProduct(id: number): void;
+  updateProduct(id: string, product: IProduct): void;
+  deleteProduct(id: string): void;
 }
 
 export interface IProduct {
-  id: number;
+  id?: string;
   name: string;
   price: number;
   description: string;
