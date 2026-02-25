@@ -38,8 +38,8 @@ export class AuthStore {
    * Inicializa autenticação do localStorage
    */
   private initializeAuth(): void {
-    const token = this.storage.getItem<string>('auth_token');
-    const user = this.storage.getItem<User>('auth_user');
+    const token = this.storage.get('auth_token') as string | null;
+    const user = this.storage.get('auth_user') as User | null;
 
     if (token && user) {
       this.tokenState.set(token);
@@ -60,8 +60,8 @@ export class AuthStore {
         this.tokenState.set(response.token);
 
         // Persiste no localStorage
-        this.storage.setItem('auth_token', response.token);
-        this.storage.setItem('auth_user', response.user);
+        this.storage.set('auth_token', response.token);
+        this.storage.set('auth_user', response.user);
 
         this.loadingState.set(false);
 
@@ -107,8 +107,8 @@ export class AuthStore {
     this.loadingState.set(false);
     this.errorState.set(null);
 
-    this.storage.removeItem('auth_token');
-    this.storage.removeItem('auth_user');
+    this.storage.remove('auth_token');
+    this.storage.remove('auth_user');
   }
 
   /**

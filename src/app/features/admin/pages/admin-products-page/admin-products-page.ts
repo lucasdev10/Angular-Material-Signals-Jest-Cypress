@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +23,7 @@ import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/co
     MatTooltipModule,
     MatDialogModule,
     RouterLink,
+    CurrencyPipe,
   ],
   templateUrl: './admin-products-page.html',
   styleUrl: './admin-products-page.scss',
@@ -29,7 +31,7 @@ import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog/co
   standalone: true,
 })
 export class AdminProductsPageComponent {
-  private readonly productStore = inject(ProductStore);
+  protected readonly productStore = inject(ProductStore);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
 

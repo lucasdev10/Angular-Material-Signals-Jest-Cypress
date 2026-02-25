@@ -7,12 +7,14 @@
  */
 export function TrackPerformance(metricName?: string) {
   return function (
-    target: unknown,
+    target: object,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
     const originalMethod = descriptor.value;
-    const name = metricName || `${target.constructor.name}.${propertyKey}`;
+    const name =
+      metricName ||
+      `${(target as { constructor: { name: string } }).constructor.name}.${propertyKey}`;
 
     descriptor.value = function (...args: unknown[]) {
       const startTime = performance.now();
@@ -54,7 +56,7 @@ export function Memoize() {
   const cache = new Map<string, unknown>();
 
   return function (
-    target: unknown,
+    _target: object,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
@@ -89,8 +91,8 @@ export function Debounce(delay = 300) {
   let timeoutId: ReturnType<typeof setTimeout>;
 
   return function (
-    target: unknown,
-    propertyKey: string,
+    _target: object,
+    _propertyKey: string,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
     const originalMethod = descriptor.value;
@@ -118,8 +120,8 @@ export function Throttle(delay = 1000) {
   let lastCall = 0;
 
   return function (
-    target: unknown,
-    propertyKey: string,
+    _target: object,
+    _propertyKey: string,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
     const originalMethod = descriptor.value;

@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +9,7 @@ import { ProductStore } from '@app/features/products/store/product.store';
 
 @Component({
   selector: 'app-admin-dashboard-page',
-  imports: [MatCardModule, MatButtonModule, MatIconModule, RouterLink],
+  imports: [MatCardModule, MatButtonModule, MatIconModule, RouterLink, CurrencyPipe],
   templateUrl: './admin-dashboard-page.html',
   styleUrl: './admin-dashboard-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,19 +1,10 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import {
-  ApplicationConfig,
-  ErrorHandler,
-  provideExperimentalZonelessChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, ErrorHandler, provideZonelessChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
+import { authInterceptor, cacheInterceptor, errorInterceptor, loadingInterceptor } from './core';
 import { GlobalErrorHandler } from './core/handlers/global-error.handler';
-import {
-  authInterceptor,
-  cacheInterceptor,
-  errorInterceptor,
-  loadingInterceptor,
-} from './core/interceptors';
 
 /**
  * Configuração da aplicação
@@ -30,7 +21,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     // Change Detection Strategy
     // Zoneless (experimental - melhor performance)
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
 
     // Animations (lazy loaded)
     provideAnimationsAsync(),
