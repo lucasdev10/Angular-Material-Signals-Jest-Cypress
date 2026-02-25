@@ -4,8 +4,8 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 @Component({
   selector: 'app-product-list',
   imports: [ProductCardComponent],
-  templateUrl: './product-list.html',
-  styleUrl: './product-list.scss',
+  templateUrl: './product-list-page.html',
+  styleUrl: './product-list-page.scss',
   standalone: true,
 })
-export class ProductListComponent {}
+export class ProductListPageComponent {}

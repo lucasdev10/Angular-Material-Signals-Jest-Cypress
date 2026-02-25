@@ -1,6 +1,17 @@
 <mat-toolbar class="header">
   <span class="header-title">Coffe Workshop</span>
+
+  <ul class="header-menu">
+    <li>
+      <a [routerLink]="['/products']" routerLinkActive="router-link-active">Products</a>
+    </li>
+    <li>
+      <a [routerLink]="['/products/create']" routerLinkActive="router-link-active">New Product</a>
+    </li>
+  </ul>
+
   <button class="shopping-cart-button" matIconButton aria-label="Shopping cart">
     <mat-icon>shopping_cart</mat-icon>
+    <span class="cart-count-badge">1</span>
   </button>
 </mat-toolbar>

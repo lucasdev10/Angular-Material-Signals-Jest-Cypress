@@ -4,10 +4,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/products', pathMatch: 'full' },
   {
     path: 'products',
-    loadComponent: () =>
-      import('./features/products/pages/product-list/product-list').then(
-        (r) => r.ProductListComponent,
-      ),
+    loadChildren: () => import('./features/products/products.route').then((r) => r.PRODUCT_ROUTES),
   },
   { path: '**', redirectTo: '/products' },
 ];
