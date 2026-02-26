@@ -351,6 +351,6 @@ Este projeto está em **nível Senior/Especialista** com:
 
 ---
 
-**Última atualização**: 2024
+**Última atualização**: 2026
 **Versão do Angular**: 21.1.0
 **Status**: ✅ Production Ready
