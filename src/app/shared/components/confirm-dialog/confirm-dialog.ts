@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
-export interface ConfirmDialogData {
+export interface IConfirmDialogData {
   title: string;
   message: string;
   confirmText?: string;
@@ -24,7 +24,7 @@ export interface ConfirmDialogData {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">
-        {{ data.cancelText || 'Cancelar' }}
+        {{ data.cancelText || 'Cancel' }}
       </button>
       <button
         mat-raised-button
@@ -32,7 +32,7 @@ export interface ConfirmDialogData {
         (click)="onConfirm()"
         cdkFocusInitial
       >
-        {{ data.confirmText || 'Confirmar' }}
+        {{ data.confirmText || 'Confirm' }}
       </button>
     </mat-dialog-actions>
   `,
@@ -58,7 +58,7 @@ export interface ConfirmDialogData {
 })
 export class ConfirmDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
-  readonly data = inject<ConfirmDialogData>(MAT_DIALOG_DATA);
+  readonly data = inject<IConfirmDialogData>(MAT_DIALOG_DATA);
 
   onConfirm(): void {
     this.dialogRef.close(true);

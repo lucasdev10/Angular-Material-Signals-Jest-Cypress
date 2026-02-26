@@ -6,7 +6,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/products', pathMatch: 'full' },
   {
     path: 'auth',
-    loadChildren: () => import('./features/auth/auth.routes').then((r) => r.authRoutes),
+    loadChildren: () => import('./features/auth/auth.routes').then((r) => r.AUTH_ROUTES),
   },
   {
     path: 'products',
@@ -21,7 +21,7 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['ADMIN'] },
-    loadChildren: () => import('./features/admin/admin.routes').then((r) => r.adminRoutes),
+    loadChildren: () => import('./features/admin/admin.routes').then((r) => r.ADMIN_ROUTES),
   },
   { path: '**', redirectTo: '/products' },
 ];

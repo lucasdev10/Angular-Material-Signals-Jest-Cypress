@@ -1,12 +1,12 @@
 /**
  * Modelo de usuário
  */
-export interface User {
+export interface IUser {
   id: string;
   email: string;
   name: string;
   avatar?: string;
-  roles: UserRole[];
+  roles: IUserRole[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,7 +14,7 @@ export interface User {
 /**
  * Roles/Permissões do usuário
  */
-export enum UserRole {
+export enum IUserRole {
   Admin = 'ADMIN',
   User = 'USER',
   Manager = 'MANAGER',
@@ -24,7 +24,7 @@ export enum UserRole {
 /**
  * DTO para login
  */
-export interface LoginDto {
+export interface ILoginDto {
   email: string;
   password: string;
   rememberMe?: boolean;
@@ -33,7 +33,7 @@ export interface LoginDto {
 /**
  * DTO para registro
  */
-export interface RegisterDto {
+export interface IRegisterDto {
   email: string;
   password: string;
   name: string;
@@ -42,8 +42,8 @@ export interface RegisterDto {
 /**
  * Resposta de autenticação
  */
-export interface AuthResponse {
-  user: User;
+export interface IAuthResponse {
+  user: IUser;
   token: string;
   refreshToken: string;
   expiresIn: number;

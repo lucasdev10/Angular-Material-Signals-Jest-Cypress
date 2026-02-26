@@ -1,6 +1,5 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, ErrorHandler, provideZonelessChangeDetection } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
 import { authInterceptor, cacheInterceptor, errorInterceptor, loadingInterceptor } from './core';
@@ -11,7 +10,6 @@ import { GlobalErrorHandler } from './core/handlers/global-error.handler';
  *
  * Features habilitadas:
  * - Zoneless change detection (experimental) - melhor performance
- * - Animations async - lazy load de animações
  * - HTTP Client com fetch API - melhor performance
  * - Interceptors globais
  * - Router com input binding e view transitions
@@ -22,9 +20,6 @@ export const appConfig: ApplicationConfig = {
     // Change Detection Strategy
     // Zoneless (experimental - melhor performance)
     provideZonelessChangeDetection(),
-
-    // Animations (lazy loaded)
-    provideAnimationsAsync(),
 
     // HTTP Client com interceptors
     provideHttpClient(

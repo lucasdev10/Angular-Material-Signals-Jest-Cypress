@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 /**
  * Opções para requisições HTTP
  */
-export interface ApiRequestOptions {
+export interface IApiRequestOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
   params?: HttpParams | Record<string, string | string[]>;
   reportProgress?: boolean;
@@ -32,35 +32,35 @@ export class ApiService {
   /**
    * GET request
    */
-  get<T>(endpoint: string, options?: ApiRequestOptions): Observable<T> {
+  get<T>(endpoint: string, options?: IApiRequestOptions): Observable<T> {
     return this.http.get<T>(`${this.baseUrl}${endpoint}`, options);
   }
 
   /**
    * POST request
    */
-  post<T>(endpoint: string, body: unknown, options?: ApiRequestOptions): Observable<T> {
+  post<T>(endpoint: string, body: unknown, options?: IApiRequestOptions): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}${endpoint}`, body, options);
   }
 
   /**
    * PUT request
    */
-  put<T>(endpoint: string, body: unknown, options?: ApiRequestOptions): Observable<T> {
+  put<T>(endpoint: string, body: unknown, options?: IApiRequestOptions): Observable<T> {
     return this.http.put<T>(`${this.baseUrl}${endpoint}`, body, options);
   }
 
   /**
    * PATCH request
    */
-  patch<T>(endpoint: string, body: unknown, options?: ApiRequestOptions): Observable<T> {
+  patch<T>(endpoint: string, body: unknown, options?: IApiRequestOptions): Observable<T> {
     return this.http.patch<T>(`${this.baseUrl}${endpoint}`, body, options);
   }
 
   /**
    * DELETE request
    */
-  delete<T>(endpoint: string, options?: ApiRequestOptions): Observable<T> {
+  delete<T>(endpoint: string, options?: IApiRequestOptions): Observable<T> {
     return this.http.delete<T>(`${this.baseUrl}${endpoint}`, options);
   }
 

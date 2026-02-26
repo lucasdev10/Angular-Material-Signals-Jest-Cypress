@@ -1,7 +1,7 @@
 /**
  * Métodos de pagamento
  */
-export enum PaymentMethod {
+export enum EPaymentMethod {
   CreditCard = 'CREDIT_CARD',
   DebitCard = 'DEBIT_CARD',
   Pix = 'PIX',
@@ -12,21 +12,21 @@ export enum PaymentMethod {
 /**
  * Labels para exibição
  */
-export const PaymentMethodLabels: Record<PaymentMethod, string> = {
-  [PaymentMethod.CreditCard]: 'Credit Card',
-  [PaymentMethod.DebitCard]: 'Debit Card',
-  [PaymentMethod.Pix]: 'PIX',
-  [PaymentMethod.Boleto]: 'Boleto',
-  [PaymentMethod.PayPal]: 'PayPal',
+export const PaymentMethodLabels: Record<EPaymentMethod, string> = {
+  [EPaymentMethod.CreditCard]: 'Credit Card',
+  [EPaymentMethod.DebitCard]: 'Debit Card',
+  [EPaymentMethod.Pix]: 'PIX',
+  [EPaymentMethod.Boleto]: 'Boleto',
+  [EPaymentMethod.PayPal]: 'PayPal',
 };
 
 /**
  * Ícones para cada método
  */
-export const PaymentMethodIcons: Record<PaymentMethod, string> = {
-  [PaymentMethod.CreditCard]: 'credit_card',
-  [PaymentMethod.DebitCard]: 'credit_card',
-  [PaymentMethod.Pix]: 'qr_code',
-  [PaymentMethod.Boleto]: 'receipt',
-  [PaymentMethod.PayPal]: 'account_balance',
+export const PaymentMethodIcons: Record<EPaymentMethod, string> = {
+  [EPaymentMethod.CreditCard]: 'credit_card',
+  [EPaymentMethod.DebitCard]: 'credit_card',
+  [EPaymentMethod.Pix]: 'qr_code',
+  [EPaymentMethod.Boleto]: 'receipt',
+  [EPaymentMethod.PayPal]: 'account_balance',
 };

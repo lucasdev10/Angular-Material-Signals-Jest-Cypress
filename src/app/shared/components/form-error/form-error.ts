@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FieldTree } from '@angular/forms/signals';
-import { MatError } from '@angular/material/form-field';
+import { MatError, MatLabel } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-form-error',
-  imports: [MatError],
+  imports: [MatError, MatLabel],
   templateUrl: './form-error.html',
   styleUrl: './form-error.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

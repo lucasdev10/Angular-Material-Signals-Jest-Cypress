@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpService } from './http';
 
-describe('Http', () => {
+describe('HttpService', () => {
   let service: HttpService<unknown>;
 
   beforeEach(() => {

@@ -4,7 +4,7 @@ import { mergeMap, retryWhen } from 'rxjs/operators';
 /**
  * Configuração de retry
  */
-export interface RetryConfig {
+export interface IRetryConfig {
   maxRetries?: number;
   delay?: number;
   backoff?: boolean;
@@ -19,7 +19,7 @@ export interface RetryConfig {
  *   retryStrategy({ maxRetries: 3, delay: 1000, backoff: true })
  * )
  */
-export function retryStrategy<T>(config: RetryConfig = {}): MonoTypeOperatorFunction<T> {
+export function retryStrategy<T>(config: IRetryConfig = {}): MonoTypeOperatorFunction<T> {
   const {
     maxRetries = 3,
     delay = 1000,

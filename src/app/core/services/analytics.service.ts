@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 /**
  * Evento de analytics
  */
-export interface AnalyticsEvent {
+export interface IAnalyticsEvent {
   category: string;
   action: string;
   label?: string;
@@ -62,7 +62,7 @@ export class AnalyticsService {
   /**
    * Rastreia evento customizado
    */
-  trackEvent(event: AnalyticsEvent): void {
+  trackEvent(event: IAnalyticsEvent): void {
     if (!this.enabled) return;
 
     console.log(...oo_oo(`1610062446_68_4_68_35_4`, '📊 Event:', event));

@@ -1,7 +1,7 @@
 /**
  * Status de pedidos
  */
-export enum OrderStatus {
+export enum EOrderStatus {
   Pending = 'PENDING',
   Processing = 'PROCESSING',
   Shipped = 'SHIPPED',
@@ -13,23 +13,23 @@ export enum OrderStatus {
 /**
  * Labels para exibição
  */
-export const OrderStatusLabels: Record<OrderStatus, string> = {
-  [OrderStatus.Pending]: 'Pending',
-  [OrderStatus.Processing]: 'Processing',
-  [OrderStatus.Shipped]: 'Shipped',
-  [OrderStatus.Delivered]: 'Delivered',
-  [OrderStatus.Cancelled]: 'Cancelled',
-  [OrderStatus.Refunded]: 'Refunded',
+export const OrderStatusLabels: Record<EOrderStatus, string> = {
+  [EOrderStatus.Pending]: 'Pending',
+  [EOrderStatus.Processing]: 'Processing',
+  [EOrderStatus.Shipped]: 'Shipped',
+  [EOrderStatus.Delivered]: 'Delivered',
+  [EOrderStatus.Cancelled]: 'Cancelled',
+  [EOrderStatus.Refunded]: 'Refunded',
 };
 
 /**
  * Cores para cada status
  */
-export const OrderStatusColors: Record<OrderStatus, string> = {
-  [OrderStatus.Pending]: 'warn',
-  [OrderStatus.Processing]: 'accent',
-  [OrderStatus.Shipped]: 'primary',
-  [OrderStatus.Delivered]: 'success',
-  [OrderStatus.Cancelled]: 'error',
-  [OrderStatus.Refunded]: 'warn',
+export const OrderStatusColors: Record<EOrderStatus, string> = {
+  [EOrderStatus.Pending]: 'warn',
+  [EOrderStatus.Processing]: 'accent',
+  [EOrderStatus.Shipped]: 'primary',
+  [EOrderStatus.Delivered]: 'success',
+  [EOrderStatus.Cancelled]: 'error',
+  [EOrderStatus.Refunded]: 'warn',
 };

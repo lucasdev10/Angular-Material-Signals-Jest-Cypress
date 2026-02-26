@@ -1,7 +1,7 @@
 /**
  * Modelo padrão para respostas de API
  */
-export interface ApiResponse<T> {
+export interface IApiResponse<T> {
   data: T;
   message?: string;
   success: boolean;
@@ -11,7 +11,7 @@ export interface ApiResponse<T> {
 /**
  * Modelo para respostas paginadas
  */
-export interface PaginatedResponse<T> {
+export interface IPaginatedResponse<T> {
   data: T[];
   pagination: {
     page: number;
@@ -24,7 +24,7 @@ export interface PaginatedResponse<T> {
 /**
  * Modelo para erros de API
  */
-export interface ApiError {
+export interface IApiError {
   status: number;
   message: string;
   errors?: Record<string, string[]>;
