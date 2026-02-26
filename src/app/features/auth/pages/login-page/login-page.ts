@@ -41,10 +41,10 @@ export class LoginPageComponent {
       password: '',
     }),
     (fieldPath) => {
-      required(fieldPath.email, { message: 'Campo obrigatório' });
-      email(fieldPath.email, { message: 'Email inválido' });
-      required(fieldPath.password, { message: 'Campo obrigatório' });
-      minLength(fieldPath.password, 6, { message: 'Mínimo de 6 caracteres' });
+      required(fieldPath.email, { message: 'Field required' });
+      email(fieldPath.email, { message: 'Invalid email address' });
+      required(fieldPath.password, { message: 'Field required' });
+      minLength(fieldPath.password, 6, { message: 'Minimum of 6 characters' });
     },
   );
 

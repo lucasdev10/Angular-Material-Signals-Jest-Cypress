@@ -5,7 +5,7 @@
         <mat-icon>lock</mat-icon>
         Login
       </mat-card-title>
-      <mat-card-subtitle>Entre com suas credenciais</mat-card-subtitle>
+      <mat-card-subtitle>Log in with your credentials</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -18,19 +18,19 @@
 
       <form>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" [formField]="loginForm.email" placeholder="seu@email.com" />
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" [formField]="loginForm.email" placeholder="your@email.com" />
           <mat-icon matPrefix>email</mat-icon>
           <app-form-error [control]="loginForm.email"></app-form-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Senha</mat-label>
+          <mat-label>Password</mat-label>
           <input
             matInput
             [type]="hidePassword() ? 'password' : 'text'"
             [formField]="loginForm.password"
-            placeholder="Sua senha"
+            placeholder="Your password"
           />
           <mat-icon matPrefix>lock</mat-icon>
           <button
@@ -38,7 +38,7 @@
             matSuffix
             type="button"
             (click)="togglePasswordVisibility()"
-            [attr.aria-label]="'Mostrar senha'"
+            [attr.aria-label]="'Show password'"
           >
             <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
@@ -55,15 +55,15 @@
         >
           @if (isLoading()) {
             <mat-spinner diameter="20"></mat-spinner>
-            Entrando...
+            Logging in...
           } @else {
-            Entrar
+            Login
           }
         </button>
       </form>
 
       <div class="demo-credentials">
-        <p><strong>Credenciais de teste:</strong></p>
+        <p><strong>Test credentials:</strong></p>
         <p>Admin: admin&#64;admin.com / admin123</p>
         <p>User: user&#64;user.com / user123</p>
       </div>

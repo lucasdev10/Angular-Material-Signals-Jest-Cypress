@@ -3,20 +3,20 @@
     <div>
       <h1>
         <mat-icon>inventory_2</mat-icon>
-        Gerenciar Produtos
+        Manage Products
       </h1>
-      <p>Visualize, edite e remova produtos do sistema</p>
+      <p>View, edit, and remove products from the system</p>
     </div>
     <button mat-raised-button color="primary" routerLink="/admin/products/create">
       <mat-icon>add</mat-icon>
-      Novo Produto
+      New Product
     </button>
   </div>
 
   @if (isLoading()) {
     <div class="loading-container">
       <mat-spinner></mat-spinner>
-      <p>Carregando produtos...</p>
+      <p>Loading products...</p>
     </div>
   } @else if (error()) {
     <mat-card class="error-card">
@@ -24,7 +24,7 @@
         <mat-icon>error</mat-icon>
         <p>{{ error() }}</p>
         <button mat-raised-button color="primary" (click)="productStore.loadProducts()">
-          Tentar Novamente
+          Try Again
         </button>
       </mat-card-content>
     </mat-card>
@@ -32,11 +32,11 @@
     <mat-card class="empty-state">
       <mat-card-content>
         <mat-icon>inventory_2</mat-icon>
-        <h2>Nenhum produto cadastrado</h2>
-        <p>Comece cadastrando seu primeiro produto</p>
+        <h2>No products listed</h2>
+        <p>Start by registering your first product</p>
         <button mat-raised-button color="primary" routerLink="/admin/products/create">
           <mat-icon>add</mat-icon>
-          Cadastrar Produto
+          Register Product
         </button>
       </mat-card-content>
     </mat-card>
@@ -45,15 +45,20 @@
       <table mat-table [dataSource]="products()" class="products-table">
         <!-- Image Column -->
         <ng-container matColumnDef="image">
-          <th mat-header-cell *matHeaderCellDef>Imagem</th>
-          <td mat-cell *matCellDef="let product">
-            <img [src]="product.image" [alt]="product.name" class="product-image" />
+          <th mat-header-cell *matHeaderCellDef>Image</th>
+          <td mat-cell class="image-content" *matCellDef="let product">
+            <img
+              [src]="product.image"
+              onerror="src = 'assets/images/coffee.jpg'"
+              [alt]="product.name"
+              class="product-image"
+            />
           </td>
         </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <th mat-header-cell *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let product">
             <div class="product-name">
               <strong>{{ product.name }}</strong>
@@ -64,7 +69,7 @@
 
         <!-- Category Column -->
         <ng-container matColumnDef="category">
-          <th mat-header-cell *matHeaderCellDef>Categoria</th>
+          <th mat-header-cell *matHeaderCellDef>Category</th>
           <td mat-cell *matCellDef="let product">
             <span class="category-badge">{{ product.category }}</span>
           </td>
@@ -72,15 +77,15 @@
 
         <!-- Price Column -->
         <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Preço</th>
+          <th mat-header-cell *matHeaderCellDef>Price</th>
           <td mat-cell *matCellDef="let product">
-            <strong>{{ product.price | currency: 'BRL' }}</strong>
+            <strong>{{ product.price | currency }}</strong>
           </td>
         </ng-container>
 
         <!-- Stock Column -->
         <ng-container matColumnDef="stock">
-          <th mat-header-cell *matHeaderCellDef>Estoque</th>
+          <th mat-header-cell *matHeaderCellDef>Stock</th>
           <td mat-cell *matCellDef="let product">
             <span [class]="'stock-badge ' + getStockClass(product.stock)">
               {{ product.stock }} un.
@@ -90,13 +95,13 @@
 
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let product">
             <div class="actions">
-              <button mat-icon-button color="primary" (click)="onEdit(product)" matTooltip="Editar">
+              <button mat-icon-button color="primary" (click)="onEdit(product)" matTooltip="Edit">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="onDelete(product)" matTooltip="Excluir">
+              <button mat-icon-button color="warn" (click)="onDelete(product)" matTooltip="Delete">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

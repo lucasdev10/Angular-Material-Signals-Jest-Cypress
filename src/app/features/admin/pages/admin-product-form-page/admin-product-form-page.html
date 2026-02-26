@@ -2,11 +2,11 @@
   <div class="page-header">
     <h1>
       <mat-icon>{{ isEditMode() ? 'edit' : 'add_circle' }}</mat-icon>
-      {{ isEditMode() ? 'Editar Produto' : 'Novo Produto' }}
+      {{ isEditMode() ? 'Edit Product' : 'New Product' }}
     </h1>
     <p>
       {{
-        isEditMode() ? 'Atualize as informações do produto' : 'Preencha os dados do novo produto'
+        isEditMode() ? 'Update the product information' : 'Fill in the details for the new product'
       }}
     </p>
   </div>
@@ -19,81 +19,85 @@
         </div>
       }
 
-      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <form>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nome do Produto</mat-label>
-          <input matInput formControlName="name" placeholder="Ex: Notebook Dell" />
+          <mat-label>Product Name</mat-label>
+          <input matInput [formField]="productForm.name" placeholder="Ex: Notebook Dell" />
           <mat-icon matPrefix>label</mat-icon>
-          @if (getErrorMessage('name')) {
-            <mat-error>{{ getErrorMessage('name') }}</mat-error>
-          }
+          <app-form-error [control]="productForm.name"></app-form-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Descrição</mat-label>
+          <mat-label>Description</mat-label>
           <textarea
             matInput
-            formControlName="description"
-            placeholder="Descreva o produto"
+            [formField]="productForm.description"
+            placeholder="Describe the product"
             rows="4"
           ></textarea>
           <mat-icon matPrefix>description</mat-icon>
-          @if (getErrorMessage('description')) {
-            <mat-error>{{ getErrorMessage('description') }}</mat-error>
-          }
+          <app-form-error [control]="productForm.description"></app-form-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Categoria</mat-label>
-          <mat-select formControlName="category" placeholder="Selecione uma categoria">
+          <mat-label>Category</mat-label>
+          <mat-select [formField]="productForm.category" placeholder="Select a category">
             @for (category of categories; track category) {
               <mat-option [value]="category">{{ category }}</mat-option>
             }
           </mat-select>
           <mat-icon matPrefix>category</mat-icon>
-          @if (getErrorMessage('category')) {
-            <mat-error>{{ getErrorMessage('category') }}</mat-error>
-          }
+          <app-form-error [control]="productForm.category"></app-form-error>
         </mat-form-field>
 
         <div class="form-row">
           <mat-form-field appearance="outline">
-            <mat-label>Preço</mat-label>
-            <input matInput type="number" formControlName="price" placeholder="0.00" step="0.01" />
-            <span matTextPrefix>R$&nbsp;</span>
+            <mat-label>Price</mat-label>
+            <input
+              matInput
+              type="number"
+              [formField]="productForm.price"
+              placeholder="0,00"
+              step="0,01"
+            />
+            <span matTextPrefix>&nbsp;</span>
             <mat-icon matPrefix>attach_money</mat-icon>
-            @if (getErrorMessage('price')) {
-              <mat-error>{{ getErrorMessage('price') }}</mat-error>
-            }
+            <app-form-error [control]="productForm.price"></app-form-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Estoque</mat-label>
-            <input matInput type="number" formControlName="stock" placeholder="0" />
+            <mat-label>Stock</mat-label>
+            <input matInput type="number" [formField]="productForm.stock" placeholder="0" />
             <span matTextSuffix>&nbsp;un.</span>
             <mat-icon matPrefix>inventory</mat-icon>
-            @if (getErrorMessage('stock')) {
-              <mat-error>{{ getErrorMessage('stock') }}</mat-error>
-            }
+            <app-form-error [control]="productForm.stock"></app-form-error>
           </mat-form-field>
         </div>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>URL da Imagem</mat-label>
-          <input matInput formControlName="image" placeholder="https://exemplo.com/imagem.jpg" />
+          <mat-label>Image URL</mat-label>
+          <input
+            matInput
+            [formField]="productForm.image"
+            placeholder="https://exemplo.com/imagem.jpg"
+          />
           <mat-icon matPrefix>image</mat-icon>
-          @if (getErrorMessage('image')) {
-            <mat-error>{{ getErrorMessage('image') }}</mat-error>
-          }
+          <app-form-error [control]="productForm.image"></app-form-error>
         </mat-form-field>
 
         <div class="form-actions">
-          <button mat-button type="button" (click)="onCancel()">Cancelar</button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="!canSubmit()">
+          <button mat-button type="button" (click)="onCancel()">Cancel</button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            [disabled]="!canSubmit()"
+            (click)="onSubmit()"
+          >
             @if (isLoading()) {
               <mat-spinner diameter="20"></mat-spinner>
             }
-            {{ isEditMode() ? 'Atualizar' : 'Cadastrar' }}
+            {{ isEditMode() ? 'Update' : 'Register' }}
           </button>
         </div>
       </form>

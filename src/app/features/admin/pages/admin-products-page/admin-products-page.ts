@@ -52,10 +52,10 @@ export class AdminProductsPageComponent {
   onDelete(product: Product): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: 'Confirmar Exclusão',
-        message: `Tem certeza que deseja excluir o produto "${product.name}"?`,
-        confirmText: 'Excluir',
-        cancelText: 'Cancelar',
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to delete the product "${product.name}"?`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
       },
     });
 

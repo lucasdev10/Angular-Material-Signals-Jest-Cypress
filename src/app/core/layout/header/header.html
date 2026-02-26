@@ -3,7 +3,7 @@
 
   <ul class="header-menu">
     <li>
-      <a [routerLink]="['/products/list']" routerLinkActive="router-link-active">Produtos</a>
+      <a [routerLink]="['/products/list']" routerLinkActive="router-link-active">Products</a>
     </li>
     @if (isAdmin()) {
       <li>
@@ -43,7 +43,7 @@
         }
         <button mat-menu-item (click)="onLogout()">
           <mat-icon>logout</mat-icon>
-          Sair
+          Logout
         </button>
       </mat-menu>
     } @else {

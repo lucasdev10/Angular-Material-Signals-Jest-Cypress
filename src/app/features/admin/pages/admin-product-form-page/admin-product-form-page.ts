@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, min, minLength, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateProductDto } from '@app/features/products/models/product.model';
 import { ProductStore } from '@app/features/products/store/product.store';
+import { FormError } from '@app/shared';
 
 @Component({
   selector: 'app-admin-product-form-page',
@@ -22,6 +24,8 @@ import { ProductStore } from '@app/features/products/store/product.store';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    FormField,
+    FormError,
   ],
   templateUrl: './admin-product-form-page.html',
   styleUrl: './admin-product-form-page.scss',
@@ -39,34 +43,30 @@ export class AdminProductFormPageComponent {
 
   readonly categories = ['Electronics', 'Clothing', 'Food', 'Books', 'Other'];
 
-  readonly productForm = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
+  readonly productForm = form(
+    signal({
+      name: '',
+      description: '',
+      category: '',
+      price: 0,
+      stock: 0,
+      image: '',
     }),
-    description: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(10)],
-    }),
-    category: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    price: new FormControl(0, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(0.01)],
-    }),
-    stock: new FormControl(0, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(0)],
-    }),
-    image: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-  });
+    (fieldPath) => {
+      required(fieldPath.name, { message: 'Field required' });
+      minLength(fieldPath.name, 3, { message: 'Minimum of 3 characters' });
+      required(fieldPath.description, { message: 'Field required' });
+      minLength(fieldPath.description, 10, { message: 'Minimum of 10 characters' });
+      required(fieldPath.category, { message: 'Field required' });
+      required(fieldPath.price, { message: 'Field required' });
+      min(fieldPath.price, 0.1, { message: 'Minimum of 00.1' });
+      required(fieldPath.stock, { message: 'Field required' });
+      min(fieldPath.stock, 0, { message: 'Minimum of 0' });
+      required(fieldPath.image, { message: 'Field required' });
+    },
+  );
 
-  readonly canSubmit = computed(() => this.productForm.valid && !this.isLoading());
+  readonly canSubmit = computed(() => this.productForm().valid() && !this.isLoading());
 
   constructor() {
     this.initializeForm();
@@ -87,14 +87,7 @@ export class AdminProductFormPageComponent {
     const product = this.productStore.products().find((p) => p.id === id);
 
     if (product) {
-      this.productForm.patchValue({
-        name: product.name,
-        description: product.description,
-        category: product.category,
-        price: product.price,
-        stock: product.stock,
-        image: product.image,
-      });
+      this.productForm().setControlValue({ ...product });
       this.isLoading.set(false);
     } else {
       this.router.navigate(['/admin/products']);
@@ -102,13 +95,13 @@ export class AdminProductFormPageComponent {
   }
 
   onSubmit(): void {
-    if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched();
+    if (this.productForm().invalid()) {
+      this.productForm().markAsTouched();
       return;
     }
 
     this.isLoading.set(true);
-    const formValue = this.productForm.getRawValue();
+    const formValue = this.productForm().controlValue();
 
     if (this.isEditMode() && this.productId()) {
       this.productStore.updateProduct(this.productId()!, formValue);
@@ -126,17 +119,5 @@ export class AdminProductFormPageComponent {
 
   onCancel(): void {
     this.router.navigate(['/admin/products']);
-  }
-
-  getErrorMessage(controlName: string): string {
-    const control = this.productForm.get(controlName);
-    if (!control?.errors || !control.touched) return '';
-
-    if (control.errors['required']) return 'Campo obrigatório';
-    if (control.errors['minlength'])
-      return `Mínimo de ${control.errors['minlength'].requiredLength} caracteres`;
-    if (control.errors['min']) return `Valor mínimo: ${control.errors['min'].min}`;
-
-    return '';
   }
 }
