@@ -13,8 +13,9 @@ export interface CanComponentDeactivate {
  * { path: 'edit/:id', canDeactivate: [unsavedChangesGuard], ... }
  */
 export const unsavedChangesGuard: CanDeactivateFn<CanComponentDeactivate> = (component) => {
-  if (component.canDeactivate && !component.canDeactivate()) {
+  if (component.canDeactivate && component.canDeactivate() === false) {
     return confirm('You have unsaved changes. Do you really want to leave?');
   }
+
   return true;
 };

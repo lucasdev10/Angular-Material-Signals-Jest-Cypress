@@ -52,8 +52,8 @@ export class ProductStore {
 
   // Computed: produtos filtrados
   readonly filteredProducts = computed(() => {
-    const products = this.products();
-    const filters = this.filters();
+    const products = this.state().products;
+    const filters = this.state().filters;
 
     return products.filter((product) => {
       if (filters.category && product.category !== filters.category) {

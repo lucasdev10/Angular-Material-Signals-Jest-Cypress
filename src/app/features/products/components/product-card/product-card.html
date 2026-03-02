@@ -1,6 +1,13 @@
 <mat-card class="product-card" appearance="outlined">
   <div class="card-image">
-    <img [src]="product().image" [alt]="product().name" />
+    <img
+      [src]="product().image"
+      onerror="src = 'assets/images/coffee.jpg'"
+      [alt]="product().name"
+    />
+    @if (product().stock > 5) {
+      <span class="badge stock-status">In Stock ({{ product().stock }})</span>
+    }
     @if (product().stock <= 5 && product().stock > 0) {
       <span class="badge low-stock">Low Stock</span>
     }
@@ -10,9 +17,16 @@
   </div>
 
   <mat-card-content>
-    <div class="product-category">{{ product().category }}</div>
+    <div class="card-content-header">
+      <div class="product-category">{{ product().category }}</div>
+      <span class="product-rating">
+        <mat-icon>star</mat-icon>
+        {{ product().rating }}
+      </span>
+    </div>
     <h3 class="product-name">{{ product().name }}</h3>
     <p class="product-description">{{ product().description }}</p>
+    <span></span>
 
     <div class="product-footer">
       <div class="product-price">
@@ -20,6 +34,7 @@
       </div>
 
       <button
+        id="add-to-cart-button"
         mat-raised-button
         color="primary"
         (click)="onAddToCart()"

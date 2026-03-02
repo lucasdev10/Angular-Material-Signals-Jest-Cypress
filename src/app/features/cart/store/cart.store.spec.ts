@@ -77,6 +77,110 @@ describe('CartStore', () => {
     expect(cartStore.items()[0].quantity).toBe(2);
   });
 
+  it('should calculate shipping cost correctly', () => {
+    cartStore.addItem(mockProduct, 1);
+    expect(cartStore.shipping()).toBe(10);
+  });
+
+  it('should have free shipping when subtotal >= 100', () => {
+    const expensiveProduct: IProduct = {
+      ...mockProduct,
+      price: 150,
+    };
+
+    cartStore.addItem(expensiveProduct, 1);
+    expect(cartStore.hasFreeShipping()).toBe(true);
+    expect(cartStore.shipping()).toBe(0);
+  });
+
+  it('should calculate tax correctly (10%)', () => {
+    cartStore.addItem(mockProduct, 1);
+    const expectedTax = 29.99 * 0.1;
+    expect(cartStore.tax()).toBeCloseTo(expectedTax, 2);
+  });
+
+  it('should calculate total correctly', () => {
+    cartStore.addItem(mockProduct, 2);
+    const subtotal = 59.98;
+    const tax = subtotal * 0.1;
+    const shipping = 10;
+    const expectedTotal = subtotal + tax + shipping;
+
+    expect(cartStore.total()).toBeCloseTo(expectedTotal, 2);
+  });
+
+  it('should remove item correctly', () => {
+    cartStore.addItem(mockProduct, 1);
+    expect(cartStore.items().length).toBe(1);
+
+    cartStore.removeItem(mockProduct.id);
+    expect(cartStore.items().length).toBe(0);
+    expect(cartStore.isEmpty()).toBe(true);
+  });
+
+  it('should update quantity to 0 and remove item', () => {
+    cartStore.addItem(mockProduct, 1);
+    cartStore.updateQuantity(mockProduct.id, 0);
+
+    expect(cartStore.items().length).toBe(0);
+  });
+
+  it('should clear cart', () => {
+    cartStore.addItem(mockProduct, 2);
+    expect(cartStore.hasItems()).toBe(true);
+
+    cartStore.clear();
+    expect(cartStore.isEmpty()).toBe(true);
+    expect(cartStore.itemCount()).toBe(0);
+  });
+
+  it('should calculate item count correctly', () => {
+    const product2: IProduct = {
+      ...mockProduct,
+      id: Utils.generateId(),
+      name: 'Product 2',
+    };
+
+    cartStore.addItem(mockProduct, 2);
+    cartStore.addItem(product2, 3);
+
+    expect(cartStore.itemCount()).toBe(5);
+  });
+
+  it('should persist cart to localStorage', async () => {
+    cartStore.addItem(mockProduct, 1);
+
+    await vi.waitFor(() => {
+      const stored = storageService.get('cart');
+      expect(stored).toBeDefined();
+    });
+  });
+
+  it('should load cart from localStorage on initialization', () => {
+    const mockInitialCart = {
+      items: [
+        {
+          product: mockProduct,
+          quantity: 2,
+          subtotal: 59.98,
+        },
+      ],
+      subtotal: 59.98,
+      tax: 5.998,
+      shipping: 10,
+      total: 75.978,
+      itemCount: 2,
+    };
+
+    storageService.set('cart', mockInitialCart);
+    const newCartStore = TestBed.inject(CartStore);
+
+    vi.waitFor(() => {
+      expect(newCartStore.items().length).toBe(1);
+      expect(newCartStore.itemCount()).toBe(2);
+    });
+  });
+
   it('should check if there is a shipping cost', () => {
     cartStore.addItem(mockProduct, 1);
     expect(cartStore.hasFreeShipping()).toBeFalsy();
@@ -101,19 +205,6 @@ describe('CartStore', () => {
 
     cartStore.removeItem(mockProduct.id);
     expect(cartStore.items().length).toBe(0);
-  });
-
-  it('should persist in localStorage', () => {
-    let storage = storageService.get('cart');
-    expect(storage).toBeNull();
-
-    cartStore.addItem(mockProduct, 2);
-
-    setTimeout(() => {
-      storage = storageService.get('cart');
-
-      expect(storage).not.toBeNull();
-    }, 500);
   });
 
   it('should recover saved state', () => {
