@@ -208,24 +208,24 @@
 
 Fluxos obrigatórios:
 
-- [ ] Usuário acessa página
-- [ ] Usuário adiciona produto ao carrinho
-- [ ] Badge atualiza
-- [ ] Usuário acessa carrinho
-- [ ] Total está correto
-- [ ] Admin cria produto
-- [ ] Produto aparece na lista
+- [x] Usuário acessa página
+- [x] Usuário adiciona produto ao carrinho
+- [x] Badge atualiza
+- [x] Usuário acessa carrinho
+- [x] Total está correto
+- [x] Admin cria produto
+- [x] Produto aparece na lista
 
 ---
 
 # ⚡ 10. PERFORMANCE
 
-- [ ] Lazy loading
-- [ ] Code splitting
-- [ ] Memoização
-- [ ] Evitar re-render desnecessário
-- [ ] Selector memoizado
-- [ ] TrackBy / React.memo
+- [x] Lazy loading
+- [x] Code splitting
+- [x] Memoização
+- [x] Evitar re-render desnecessário
+- [x] Selector memoizado
+- [x] TrackBy / React.memo
 
 ---
 

@@ -71,4 +71,8 @@ export class AdminProductsPageComponent {
     if (stock < 10) return 'low-stock';
     return 'in-stock';
   }
+
+  trackByProductId(index: number, product: IProduct): string {
+    return product.id;
+  }
 }
