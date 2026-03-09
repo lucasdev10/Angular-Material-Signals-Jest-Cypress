@@ -51,7 +51,7 @@ jobs:
         run: npm run test
 
       - name: Run cypress
-        run: npm run e2e:headless
+        run: npx start-server-and-test "npm start" http://localhost:4200 "npm run e2e:headless"
 
   build:
     name: Build Application
