@@ -1,55 +1,81 @@
-<mat-toolbar class="header">
-  <span class="header-title">Coffee Workshop</span>
+<mat-toolbar class="header" role="banner">
+  <span class="header-title" role="heading" aria-level="1">Coffee Workshop</span>
 
-  <ul class="header-menu">
-    <li>
-      <a [routerLink]="['/products/list']" routerLinkActive="router-link-active">Products</a>
-    </li>
-    @if (isAdmin()) {
-      <li>
-        <a [routerLink]="['/admin']" routerLinkActive="router-link-active">Admin</a>
+  <nav role="navigation" aria-label="Main navigation">
+    <ul class="header-menu" role="menubar">
+      <li role="none">
+        <a
+          [routerLink]="['/products/list']"
+          routerLinkActive="router-link-active"
+          role="menuitem"
+          aria-label="View products"
+          >Products</a
+        >
       </li>
-    }
-  </ul>
+      @if (isAdmin()) {
+        <li role="none">
+          <a
+            [routerLink]="['/admin']"
+            routerLinkActive="router-link-active"
+            role="menuitem"
+            aria-label="Admin dashboard"
+            >Admin</a
+          >
+        </li>
+      }
+    </ul>
+  </nav>
 
-  <div class="header-actions">
+  <div class="header-actions" role="toolbar" aria-label="User actions">
     <button
       class="shopping-cart-button"
       mat-icon-button
-      aria-label="Shopping cart"
+      [attr.aria-label]="'Shopping cart with ' + cartItemCount() + ' items'"
       [routerLink]="['/cart']"
       [matBadge]="cartItemCount()"
       [matBadgeHidden]="cartItemCount() === 0"
       matBadgeColor="warn"
+      tabindex="0"
     >
-      <mat-icon>shopping_cart</mat-icon>
+      <mat-icon aria-hidden="true">shopping_cart</mat-icon>
     </button>
 
     @if (isAuthenticated()) {
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
-        <mat-icon>account_circle</mat-icon>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        [attr.aria-label]="'User menu for ' + user()?.fullName"
+        aria-haspopup="true"
+        tabindex="0"
+      >
+        <mat-icon aria-hidden="true">account_circle</mat-icon>
       </button>
-      <mat-menu #userMenu="matMenu">
-        <div class="user-info">
-          <strong>{{ user()?.fullName }}</strong>
-          <small>{{ user()?.email }}</small>
+      <mat-menu #userMenu="matMenu" role="menu">
+        <div class="user-info" role="presentation">
+          <strong aria-label="User name">{{ user()?.fullName }}</strong>
+          <small aria-label="User email">{{ user()?.email }}</small>
         </div>
-        <mat-divider></mat-divider>
+        <mat-divider role="separator"></mat-divider>
         @if (isAdmin()) {
-          <button mat-menu-item [routerLink]="['/admin']">
-            <mat-icon>dashboard</mat-icon>
-            Dashboard
+          <button mat-menu-item [routerLink]="['/admin']" role="menuitem" tabindex="0">
+            <mat-icon aria-hidden="true">dashboard</mat-icon>
+            <span>Dashboard</span>
           </button>
         }
-        <button mat-menu-item (click)="onLogout()">
-          <mat-icon>logout</mat-icon>
-          Logout
+        <button mat-menu-item (click)="onLogout()" role="menuitem" tabindex="0">
+          <mat-icon aria-hidden="true">logout</mat-icon>
+          <span>Logout</span>
         </button>
       </mat-menu>
     } @else {
-      <button mat-button [routerLink]="['/auth/login']">
-        <mat-icon>login</mat-icon>
-        Login
+      <button
+        mat-button
+        [routerLink]="['/auth/login']"
+        aria-label="Login to your account"
+        tabindex="0"
+      >
+        <mat-icon aria-hidden="true">login</mat-icon>
+        <span>Login</span>
       </button>
     }
   </div>

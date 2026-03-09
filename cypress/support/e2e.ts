@@ -15,3 +15,6 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
+
+// Import cypress-plugin-tab for keyboard navigation testing
+import 'cypress-plugin-tab';

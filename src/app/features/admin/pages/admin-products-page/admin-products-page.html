@@ -1,56 +1,74 @@
-<div class="admin-products-container">
+<div class="admin-products-container" role="region" aria-label="Product management">
   <div class="page-header">
     <div>
-      <h1>
-        <mat-icon>inventory_2</mat-icon>
-        Manage Products
+      <h1 id="admin-heading">
+        <mat-icon aria-hidden="true">inventory_2</mat-icon>
+        <span>Manage Products</span>
       </h1>
       <p>View, edit, and remove products from the system</p>
     </div>
-    <button mat-raised-button color="primary" routerLink="/admin/products/create">
-      <mat-icon>add</mat-icon>
-      New Product
+    <button
+      mat-raised-button
+      color="primary"
+      routerLink="/admin/products/create"
+      aria-label="Create new product"
+      tabindex="0"
+    >
+      <mat-icon aria-hidden="true">add</mat-icon>
+      <span>New Product</span>
     </button>
   </div>
 
   @if (isLoading()) {
-    <div class="loading-container">
-      <mat-spinner></mat-spinner>
+    <div class="loading-container" role="status" aria-live="polite" aria-busy="true">
+      <mat-spinner aria-label="Loading products"></mat-spinner>
       <p>Loading products...</p>
     </div>
   } @else if (error()) {
-    <mat-card class="error-card">
+    <mat-card class="error-card" role="alert" aria-live="assertive">
       <mat-card-content>
-        <mat-icon>error</mat-icon>
+        <mat-icon aria-hidden="true">error</mat-icon>
         <p>{{ error() }}</p>
-        <button mat-raised-button color="primary" (click)="productStore.loadProducts()">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="productStore.loadProducts()"
+          aria-label="Retry loading products"
+          tabindex="0"
+        >
           Try Again
         </button>
       </mat-card-content>
     </mat-card>
   } @else if (products().length === 0) {
-    <mat-card class="empty-state">
+    <mat-card class="empty-state" role="status">
       <mat-card-content>
-        <mat-icon>inventory_2</mat-icon>
+        <mat-icon aria-hidden="true">inventory_2</mat-icon>
         <h2>No products listed</h2>
         <p>Start by registering your first product</p>
-        <button mat-raised-button color="primary" routerLink="/admin/products/create">
-          <mat-icon>add</mat-icon>
-          Register Product
+        <button
+          mat-raised-button
+          color="primary"
+          routerLink="/admin/products/create"
+          aria-label="Register your first product"
+          tabindex="0"
+        >
+          <mat-icon aria-hidden="true">add</mat-icon>
+          <span>Register Product</span>
         </button>
       </mat-card-content>
     </mat-card>
   } @else {
-    <mat-card>
+    <mat-card role="table" aria-labelledby="admin-heading">
       <table mat-table [dataSource]="products()" class="products-table">
         <!-- Image Column -->
         <ng-container matColumnDef="image">
-          <th mat-header-cell *matHeaderCellDef>Image</th>
+          <th mat-header-cell *matHeaderCellDef scope="col">Image</th>
           <td mat-cell class="image-content" *matCellDef="let product">
             <img
               [src]="product.image"
               onerror="src = 'assets/images/coffee.jpg'"
-              [alt]="product.name"
+              [alt]="product.name + ' product image'"
               class="product-image"
             />
           </td>
@@ -58,7 +76,7 @@
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
           <td mat-cell *matCellDef="let product">
             <div class="product-name">
               <strong>{{ product.name }}</strong>
@@ -69,25 +87,30 @@
 
         <!-- Category Column -->
         <ng-container matColumnDef="category">
-          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <th mat-header-cell *matHeaderCellDef scope="col">Category</th>
           <td mat-cell *matCellDef="let product">
-            <span class="category-badge">{{ product.category }}</span>
+            <span class="category-badge" aria-label="Category">{{ product.category }}</span>
           </td>
         </ng-container>
 
         <!-- Price Column -->
         <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <th mat-header-cell *matHeaderCellDef scope="col">Price</th>
           <td mat-cell *matCellDef="let product">
-            <strong>{{ product.price | currency }}</strong>
+            <strong [attr.aria-label]="'Price: ' + (product.price | currency)">{{
+              product.price | currency
+            }}</strong>
           </td>
         </ng-container>
 
         <!-- Stock Column -->
         <ng-container matColumnDef="stock">
-          <th mat-header-cell *matHeaderCellDef>Stock</th>
+          <th mat-header-cell *matHeaderCellDef scope="col">Stock</th>
           <td mat-cell *matCellDef="let product">
-            <span [class]="'stock-badge ' + getStockClass(product.stock)">
+            <span
+              [class]="'stock-badge ' + getStockClass(product.stock)"
+              [attr.aria-label]="'Stock: ' + product.stock + ' units'"
+            >
               {{ product.stock }} un.
             </span>
           </td>
@@ -95,14 +118,28 @@
 
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <th mat-header-cell *matHeaderCellDef scope="col">Actions</th>
           <td mat-cell *matCellDef="let product">
-            <div class="actions">
-              <button mat-icon-button color="primary" (click)="onEdit(product)" matTooltip="Edit">
-                <mat-icon>edit</mat-icon>
+            <div class="actions" role="group" [attr.aria-label]="'Actions for ' + product.name">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="onEdit(product)"
+                matTooltip="Edit"
+                [attr.aria-label]="'Edit ' + product.name"
+                tabindex="0"
+              >
+                <mat-icon aria-hidden="true">edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="onDelete(product)" matTooltip="Delete">
-                <mat-icon>delete</mat-icon>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onDelete(product)"
+                matTooltip="Delete"
+                [attr.aria-label]="'Delete ' + product.name"
+                tabindex="0"
+              >
+                <mat-icon aria-hidden="true">delete</mat-icon>
               </button>
             </div>
           </td>

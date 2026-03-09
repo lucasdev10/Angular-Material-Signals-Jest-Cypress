@@ -252,11 +252,11 @@ Fluxos obrigatórios:
 # 🚀 13. DIFERENCIAL (OPCIONAL)
 
 - [ ] SSR
+- [ ] Internacionalização (i18n)
 - [ ] Docker
 - [ ] Deploy automatizado
 - [ ] Lighthouse performance
-- [ ] Acessibilidade (aria, roles, tabIndex)
-- [ ] Internacionalização (i18n)
+- [x] Acessibilidade (aria, roles, tabIndex)
 
 ---
 

@@ -1,8 +1,8 @@
-<div class="form-container">
+<div class="form-container" role="region" aria-label="Product form">
   <div class="page-header">
-    <h1>
-      <mat-icon>{{ isEditMode() ? 'edit' : 'add_circle' }}</mat-icon>
-      {{ isEditMode() ? 'Edit Product' : 'New Product' }}
+    <h1 id="form-heading">
+      <mat-icon aria-hidden="true">{{ isEditMode() ? 'edit' : 'add_circle' }}</mat-icon>
+      <span>{{ isEditMode() ? 'Edit Product' : 'New Product' }}</span>
     </h1>
     <p>
       {{
@@ -14,17 +14,23 @@
   <mat-card class="form-card">
     <mat-card-content>
       @if (isLoading()) {
-        <div class="loading-overlay">
-          <mat-spinner></mat-spinner>
+        <div class="loading-overlay" role="status" aria-live="polite" aria-busy="true">
+          <mat-spinner aria-label="Processing form"></mat-spinner>
         </div>
       }
 
-      <form>
+      <form role="form" [attr.aria-labelledby]="'form-heading'">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Product Name</mat-label>
-          <input matInput [formField]="productForm.name" placeholder="Ex: Notebook Dell" />
-          <mat-icon matPrefix>label</mat-icon>
-          <app-form-error [control]="productForm.name"></app-form-error>
+          <input
+            matInput
+            [formField]="productForm.name"
+            placeholder="Ex: Notebook Dell"
+            aria-required="true"
+            aria-describedby="name-error"
+          />
+          <mat-icon matPrefix aria-hidden="true">label</mat-icon>
+          <app-form-error [control]="productForm.name" id="name-error"></app-form-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -34,23 +40,33 @@
             [formField]="productForm.description"
             placeholder="Describe the product"
             rows="4"
+            aria-required="true"
+            aria-describedby="description-error"
           ></textarea>
-          <mat-icon matPrefix>description</mat-icon>
-          <app-form-error [control]="productForm.description"></app-form-error>
+          <mat-icon matPrefix aria-hidden="true">description</mat-icon>
+          <app-form-error
+            [control]="productForm.description"
+            id="description-error"
+          ></app-form-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Category</mat-label>
-          <mat-select [formField]="productForm.category" placeholder="Select a category">
+          <mat-select
+            [formField]="productForm.category"
+            placeholder="Select a category"
+            aria-required="true"
+            aria-describedby="category-error"
+          >
             @for (category of categories; track category) {
               <mat-option [value]="category">{{ category }}</mat-option>
             }
           </mat-select>
-          <mat-icon matPrefix>category</mat-icon>
-          <app-form-error [control]="productForm.category"></app-form-error>
+          <mat-icon matPrefix aria-hidden="true">category</mat-icon>
+          <app-form-error [control]="productForm.category" id="category-error"></app-form-error>
         </mat-form-field>
 
-        <div class="form-row">
+        <div class="form-row" role="group" aria-label="Price and stock information">
           <mat-form-field appearance="outline">
             <mat-label>Price</mat-label>
             <input
@@ -59,18 +75,27 @@
               [formField]="productForm.price"
               placeholder="0,00"
               step="0,01"
+              aria-required="true"
+              aria-describedby="price-error"
             />
-            <span matTextPrefix>&nbsp;</span>
-            <mat-icon matPrefix>attach_money</mat-icon>
-            <app-form-error [control]="productForm.price"></app-form-error>
+            <span matTextPrefix aria-hidden="true">&nbsp;</span>
+            <mat-icon matPrefix aria-hidden="true">attach_money</mat-icon>
+            <app-form-error [control]="productForm.price" id="price-error"></app-form-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Stock</mat-label>
-            <input matInput type="number" [formField]="productForm.stock" placeholder="0" />
-            <span matTextSuffix>&nbsp;un.</span>
-            <mat-icon matPrefix>inventory</mat-icon>
-            <app-form-error [control]="productForm.stock"></app-form-error>
+            <input
+              matInput
+              type="number"
+              [formField]="productForm.stock"
+              placeholder="0"
+              aria-required="true"
+              aria-describedby="stock-error"
+            />
+            <span matTextSuffix aria-hidden="true">&nbsp;un.</span>
+            <mat-icon matPrefix aria-hidden="true">inventory</mat-icon>
+            <app-form-error [control]="productForm.stock" id="stock-error"></app-form-error>
           </mat-form-field>
         </div>
 
@@ -80,24 +105,36 @@
             matInput
             [formField]="productForm.image"
             placeholder="https://exemplo.com/imagem.jpg"
+            aria-required="true"
+            aria-describedby="image-error"
           />
-          <mat-icon matPrefix>image</mat-icon>
-          <app-form-error [control]="productForm.image"></app-form-error>
+          <mat-icon matPrefix aria-hidden="true">image</mat-icon>
+          <app-form-error [control]="productForm.image" id="image-error"></app-form-error>
         </mat-form-field>
 
-        <div class="form-actions">
-          <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <div class="form-actions" role="group" aria-label="Form actions">
+          <button
+            mat-button
+            type="button"
+            (click)="onCancel()"
+            aria-label="Cancel and go back"
+            tabindex="0"
+          >
+            Cancel
+          </button>
           <button
             mat-raised-button
             color="primary"
             type="button"
             [disabled]="!canSubmit()"
             (click)="onSubmit()"
+            [attr.aria-label]="isEditMode() ? 'Update product' : 'Register new product'"
+            tabindex="0"
           >
             @if (isLoading()) {
-              <mat-spinner diameter="20"></mat-spinner>
+              <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
             }
-            {{ isEditMode() ? 'Update' : 'Register' }}
+            <span>{{ isEditMode() ? 'Update' : 'Register' }}</span>
           </button>
         </div>
       </form>

@@ -1,25 +1,30 @@
-<div class="product-list-container">
-  <h1 class="page-title">Our Products</h1>
+<div class="product-list-container" role="region" aria-label="Product catalog">
+  <h1 class="page-title" id="products-heading">Our Products</h1>
 
   @if (isLoading()) {
-    <div class="loading-container">
-      <mat-spinner></mat-spinner>
+    <div class="loading-container" role="status" aria-live="polite" aria-busy="true">
+      <mat-spinner aria-label="Loading products"></mat-spinner>
       <p>Loading products...</p>
     </div>
   }
 
   @if (error()) {
-    <div class="error-container">
+    <div class="error-container" role="alert" aria-live="assertive">
       <p class="error-message">{{ error() }}</p>
     </div>
   }
 
   @if (!isLoading() && !error()) {
-    <div class="products-grid">
+    <div
+      class="products-grid"
+      role="list"
+      aria-labelledby="products-heading"
+      [attr.aria-label]="products().length + ' products available'"
+    >
       @for (product of products(); track product.id) {
-        <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
+        <app-product-card [product]="product" (addToCart)="onAddToCart($event)" role="listitem" />
       } @empty {
-        <div class="empty-state">
+        <div class="empty-state" role="status">
           <p>No products found</p>
         </div>
       }

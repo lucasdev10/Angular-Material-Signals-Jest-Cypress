@@ -67,6 +67,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "angular-eslint": "21.2.0",
     "cypress": "^15.11.0",
+    "cypress-plugin-tab": "^2.0.0",
     "eslint": "^9.39.3",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",

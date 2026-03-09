@@ -1,47 +1,66 @@
-<mat-card class="product-card" appearance="outlined">
-  <div class="card-image">
+<mat-card
+  class="product-card"
+  appearance="outlined"
+  role="article"
+  [attr.aria-label]="'Product: ' + product().name"
+>
+  <div class="card-image" role="img" [attr.aria-label]="product().name + ' product image'">
     <img
       [src]="product().image"
       onerror="src = 'assets/images/coffee.jpg'"
-      [alt]="product().name"
+      [alt]="product().name + ' - ' + product().description"
     />
     @if (product().stock > 5) {
-      <span class="badge stock-status">In Stock ({{ product().stock }})</span>
+      <span class="badge stock-status" role="status" aria-label="In stock"
+        >In Stock ({{ product().stock }})</span
+      >
     }
     @if (product().stock <= 5 && product().stock > 0) {
-      <span class="badge low-stock">Low Stock</span>
+      <span class="badge low-stock" role="status" aria-label="Low stock warning">Low Stock</span>
     }
     @if (product().stock === 0) {
-      <span class="badge out-of-stock">Out of Stock</span>
+      <span class="badge out-of-stock" role="status" aria-label="Out of stock">Out of Stock</span>
     }
   </div>
 
   <mat-card-content>
     <div class="card-content-header">
-      <div class="product-category">{{ product().category }}</div>
-      <span class="product-rating">
-        <mat-icon>star</mat-icon>
-        {{ product().rating }}
+      <div class="product-category" aria-label="Category">{{ product().category }}</div>
+      <span
+        class="product-rating"
+        [attr.aria-label]="'Rating: ' + product().rating + ' out of 5 stars'"
+      >
+        <mat-icon aria-hidden="true">star</mat-icon>
+        <span>{{ product().rating }}</span>
       </span>
     </div>
-    <h3 class="product-name">{{ product().name }}</h3>
-    <p class="product-description">{{ product().description }}</p>
+    <h3 class="product-name" id="product-name-{{ product().id }}">{{ product().name }}</h3>
+    <p class="product-description" id="product-desc-{{ product().id }}">
+      {{ product().description }}
+    </p>
     <span></span>
 
     <div class="product-footer">
-      <div class="product-price">
-        <span class="price-value">{{ product().price | currency }}</span>
+      <div
+        class="product-price"
+        role="text"
+        [attr.aria-label]="'Price: ' + (product().price | currency)"
+      >
+        <span class="price-value" aria-hidden="true">{{ product().price | currency }}</span>
       </div>
 
       <button
-        id="add-to-cart-button"
+        id="add-to-cart-button-{{ product().id }}"
         mat-raised-button
         color="primary"
         (click)="onAddToCart()"
         [disabled]="product().stock === 0"
+        [attr.aria-label]="'Add ' + product().name + ' to cart'"
+        [attr.aria-describedby]="'product-name-' + product().id + ' product-desc-' + product().id"
+        tabindex="0"
       >
-        <mat-icon>add_shopping_cart</mat-icon>
-        Add to Cart
+        <mat-icon aria-hidden="true">add_shopping_cart</mat-icon>
+        <span>Add to Cart</span>
       </button>
     </div>
   </mat-card-content>

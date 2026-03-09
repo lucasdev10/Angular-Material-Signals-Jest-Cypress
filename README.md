@@ -198,6 +198,35 @@ Husky + lint-staged automatically run on commit:
 
 See [SECURITY_GUIDE.md](docs/SECURITY_GUIDE.md) for details.
 
+## ♿ Accessibility
+
+This project implements WCAG 2.1 Level AA accessibility standards:
+
+- ✅ Semantic HTML with proper landmarks (main, nav, header)
+- ✅ ARIA attributes for screen reader support
+- ✅ Keyboard navigation (Tab, Enter, Escape)
+- ✅ Focus management and visible indicators
+- ✅ Descriptive labels and alt text
+- ✅ Live regions for dynamic content
+- ✅ Form validation with accessible error messages
+- ✅ Color contrast compliance
+
+**Key Features**:
+
+- All interactive elements keyboard accessible
+- Dynamic aria-labels for context-aware descriptions
+- Proper heading hierarchy throughout
+- Screen reader tested with NVDA/VoiceOver
+
+See [ACCESSIBILITY.md](docs/ACCESSIBILITY.md) for complete implementation guide.
+
+### Testing Accessibility
+
+```bash
+npm run cypress          # Includes accessibility test suite
+npm run test:a11y        # Run accessibility-specific tests
+```
+
 ## ⚡ Performance
 
 - ✅ Lazy loading (all feature modules)
