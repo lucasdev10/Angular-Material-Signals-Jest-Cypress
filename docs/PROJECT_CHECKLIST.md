@@ -253,8 +253,8 @@ Fluxos obrigatórios:
 
 - [ ] SSR
 - [ ] Internacionalização (i18n)
-- [ ] Docker
-- [ ] Deploy automatizado
+- [x] Docker
+- [x] Deploy automatizado
 - [x] Lighthouse performance
 - [x] Acessibilidade (aria, roles, tabIndex)
 

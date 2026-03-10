@@ -258,6 +258,59 @@ npm run build            # Build for production
 npx lighthouse http://localhost:4200 --view  # Run Lighthouse audit
 ```
 
+## 🐳 Docker
+
+The application is fully containerized and ready for deployment:
+
+- ✅ Multi-stage Dockerfile for optimal image size (~50 MB)
+- ✅ Docker Compose for easy local deployment
+- ✅ Nginx configuration with caching and security headers
+- ✅ Health checks and monitoring
+- ✅ GitHub Container Registry integration
+
+**Quick Start**:
+
+```bash
+# Using Docker Compose
+docker-compose up -d
+
+# Using Docker CLI
+docker build -t coffee-workshop .
+docker run -d -p 8080:80 coffee-workshop
+
+# Access application
+open http://localhost:8080
+```
+
+See [DOCKER.md](docs/DOCKER.md) for complete Docker guide.
+
+## 🚀 Automated Deployment
+
+CI/CD pipelines configured for automated deployments:
+
+- ✅ GitHub Actions workflows
+- ✅ Automated testing before deployment
+- ✅ Multi-environment support (dev, staging, production)
+- ✅ Docker image building and publishing
+- ✅ Platform deployments (Vercel, Netlify)
+- ✅ Rollback strategies
+
+**Deployment Environments**:
+
+- **Development**: Auto-deploy on push to `develop`
+- **Staging**: Preview deployments for PRs
+- **Production**: Auto-deploy on push to `main` or tags
+
+**Supported Platforms**:
+
+- Vercel (Recommended)
+- Netlify
+- Docker (Self-hosted)
+- AWS Amplify
+- Azure Static Web Apps
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for complete deployment guide.
+
 ## ⚡ Performance
 
 - ✅ Lazy loading (all feature modules)
