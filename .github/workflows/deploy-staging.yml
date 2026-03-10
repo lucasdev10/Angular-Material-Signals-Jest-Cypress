@@ -40,14 +40,14 @@ jobs:
         env:
           NODE_ENV: staging
 
-      - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          alias-domains: staging.coffee-workshop.vercel.app
-          working-directory: ./
+      # - name: Deploy to Vercel (Preview)
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     alias-domains: staging.coffee-workshop.vercel.app
+      #     working-directory: ./
 
       - name: Deploy to Netlify (Preview)
         uses: nwtgck/actions-netlify@v2
