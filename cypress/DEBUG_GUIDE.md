@@ -1,321 +1,346 @@
-# 🐛 Guia de Debug do Cypress
+# 🐛 Guia de Debug - Cypress
 
-## Técnicas de Debug
+## Problemas Comuns e Soluções
 
-### 1. `cy.log()` - Log no Command Log
+### 1. Timing Assíncrono
 
-Aparece no painel esquerdo do Cypress Test Runner.
-
-```typescript
-cy.log('🔍 Valor da variável:', minhaVariavel);
-cy.log('Estado atual:', { count: 5, active: true });
-```
-
-**Quando usar:** Para acompanhar o fluxo do teste visualmente.
-
----
-
-### 2. `console.log()` - Log no DevTools
-
-Aparece no console do navegador (F12).
+**Problema**: Elementos não são encontrados ou contagens incorretas
 
 ```typescript
+// ❌ ERRADO - Não funciona corretamente
 cy.get('body').then(($body) => {
-  console.log('🔍 Body HTML:', $body.html());
-  console.log('🔍 Elementos encontrados:', $body.find('.minha-classe').length);
+  const rows = $body.find('.products-table tbody tr');
+  const initialCount = rows.length; // Pode ser 0 mesmo tendo produtos!
 });
 ```
 
-**Quando usar:** Para inspecionar objetos complexos e HTML.
-
----
-
-### 3. `cy.debug()` - Pausa com Debugger
-
-Pausa a execução e abre o debugger do navegador.
+**Solução**: Use `cy.get()` que aguarda automaticamente
 
 ```typescript
-cy.get('.products-table').debug(); // Pausa aqui
-```
-
-**Como usar:**
-
-1. Adicione `.debug()` onde quer pausar
-2. Abra o DevTools (F12)
-3. No console, digite `subject` para ver o elemento atual
-
----
-
-### 4. `cy.pause()` - Pausa Interativa
-
-Pausa o teste e permite avançar passo a passo.
-
-```typescript
-cy.visit('/admin/products');
-cy.pause(); // Pausa aqui - clique em "Resume" para continuar
-cy.get('.products-table').should('be.visible');
-```
-
-**Quando usar:** Para inspecionar o estado da aplicação manualmente.
-
----
-
-### 5. `.then()` com Inspeção
-
-Acessa o elemento jQuery para inspeção detalhada.
-
-```typescript
+// ✅ CORRETO - Aguarda os elementos aparecerem
 cy.get('.products-table tbody tr').then(($rows) => {
-  console.log('📊 Número de linhas:', $rows.length);
-  console.log('📊 Primeira linha:', $rows.first().html());
-  console.log('📊 Todas as linhas:', $rows.toArray());
-
-  // Itera sobre cada linha
-  $rows.each((index, row) => {
-    console.log(`Linha ${index}:`, $(row).text());
-  });
+  const initialCount = $rows.length; // Agora pega o valor correto!
 });
 ```
 
----
+**Por que acontece?**
 
-### 6. `cy.screenshot()` - Captura de Tela
+- `cy.get('body').then()` captura um snapshot do DOM naquele momento
+- Se o Angular ainda está renderizando, a tabela pode estar vazia
+- `cy.get('.products-table tbody tr')` aguarda automaticamente até os elementos aparecerem
 
-Salva screenshot em `cypress/screenshots/`.
+### 2. Signals e Store não Atualizam
 
-```typescript
-cy.screenshot('debug-estado-inicial');
-cy.get('.products-table').screenshot('debug-tabela');
-```
-
-**Quando usar:** Para análise posterior ou CI/CD.
-
----
-
-### 7. `.invoke()` - Inspeciona Propriedades
-
-Acessa propriedades e métodos de elementos.
+**Problema**: Produto criado no admin não aparece na lista pública
 
 ```typescript
-// Pega o texto
-cy.get('.product-name')
-  .invoke('text')
-  .then((text) => {
-    console.log('📝 Texto:', text);
-  });
-
-// Pega atributos
-cy.get('input')
-  .invoke('val')
-  .then((value) => {
-    console.log('📝 Valor do input:', value);
-  });
-
-// Pega propriedades
-cy.get('.products-table tbody tr')
-  .invoke('length')
-  .then((length) => {
-    console.log('📝 Número de linhas:', length);
-  });
-```
-
----
-
-### 8. `.should()` com Callback
-
-Faz asserções e debug ao mesmo tempo.
-
-```typescript
-cy.get('.products-table tbody tr').should(($rows) => {
-  console.log('🔍 Rows:', $rows.length);
-  expect($rows).to.have.length.greaterThan(0);
+// ❌ Não funciona - produto não aparece na lista pública
+it('test', () => {
+  cy.visit('/admin/products/create');
+  // ... cria produto ...
+  cy.visit('/products'); // Produto não aparece!
 });
 ```
 
----
+**Causa**: Store singleton carrega produtos apenas uma vez no constructor
 
-### 9. Cypress Studio (Modo Interativo)
-
-Grava interações visualmente.
-
-1. Adicione `experimentalStudio: true` no `cypress.config.ts`
-2. Clique com botão direito no teste
-3. Selecione "Add Commands to Test"
-
----
-
-### 10. Time Travel Debugging
-
-O Cypress automaticamente tira snapshots de cada comando.
-
-**Como usar:**
-
-1. Execute o teste
-2. Passe o mouse sobre os comandos no Command Log
-3. Veja o estado da aplicação naquele momento
-4. Clique para fixar o snapshot
-
----
-
-## Exemplo Prático: Debug de Tabela
+**Solução**: Força reload completo da página
 
 ```typescript
-it('debug example', () => {
-  cy.visit('/admin/products');
+// ✅ Funciona - reinicializa toda a aplicação
+it('should create and see product', () => {
+  // Cria produto
+  cy.visit('/admin/products/create');
+  // ... preenche formulário ...
+  cy.contains('button', 'Register').click();
 
-  // Aguarda a página carregar
-  cy.get('h1').should('be.visible');
+  // Força reload completo - reinicializa toda a aplicação
+  cy.reload();
+  cy.visit('/products');
 
-  // Debug: Verifica se a tabela existe
-  cy.get('body').then(($body) => {
-    const tableExists = $body.find('.products-table').length > 0;
-    cy.log('🔍 Table exists?', tableExists);
-
-    if (!tableExists) {
-      cy.log('⚠️ Table not found! Available classes:');
-      console.log('Available elements:', $body.find('[class*="table"]').toArray());
-      cy.screenshot('table-not-found');
-      return;
-    }
-
-    // Debug: Conta as linhas
-    const rows = $body.find('.products-table tbody tr');
-    cy.log('🔍 Rows found:', rows.length);
-
-    // Debug: Mostra o conteúdo de cada linha
-    rows.each((index, row) => {
-      const text = $(row).text().trim();
-      console.log(`Row ${index}:`, text);
-    });
-
-    // Debug: Mostra o HTML completo da tabela
-    console.log('📋 Table HTML:', $body.find('.products-table').html());
-  });
+  // Agora o produto aparece!
+  cy.contains(productName).should('be.visible');
 });
 ```
 
----
+### 3. Elementos não Encontrados
 
-## Dicas Importantes
+**Problema**: `cy.get()` falha ao encontrar elementos
 
-### ✅ Use seletores específicos
-
-```typescript
-// ❌ Ruim - muito genérico
-cy.get('tr');
-
-// ✅ Bom - específico
-cy.get('.products-table tbody tr');
-```
-
-### ✅ Aguarde elementos carregarem
+**Soluções**:
 
 ```typescript
-// Aguarda a tabela aparecer antes de contar
+// Aguardar elemento aparecer
+cy.get('.loading-spinner').should('not.exist');
 cy.get('.products-table').should('be.visible');
-cy.get('.products-table tbody tr').should('have.length.greaterThan', 0);
-```
 
-### ✅ Use data-cy para testes
+// Usar timeout maior
+cy.get('.my-element', { timeout: 10000 }).should('exist');
 
-```html
-<!-- No HTML -->
-<table data-cy="products-table">
-  <tbody>
-    <tr data-cy="product-row">
-      ...
-    </tr>
-  </tbody>
-</table>
-```
-
-```typescript
-// No teste
-cy.get('[data-cy="products-table"]');
-cy.get('[data-cy="product-row"]');
-```
-
-### ✅ Verifique o estado antes de agir
-
-```typescript
+// Verificar estados alternativos
 cy.get('body').then(($body) => {
   if ($body.find('.empty-state').length > 0) {
-    cy.log('⚠️ No products found - empty state');
+    cy.log('Empty state found');
   } else {
-    cy.log('✅ Products table found');
+    cy.get('.products-table tbody tr').should('exist');
   }
 });
 ```
 
----
+### 4. Testes Flaky (Instáveis)
 
-## Comandos Úteis do DevTools
+**Problema**: Testes passam às vezes e falham outras vezes
 
-Quando usar `cy.debug()`, você pode usar no console:
+**Soluções**:
 
-```javascript
-// Ver o elemento atual
-subject;
+```typescript
+// Aguardar condições específicas
+cy.contains('h1', 'Products').should('be.visible');
+cy.get('mat-spinner').should('not.exist');
 
-// Ver todos os comandos Cypress disponíveis
-Cypress;
+// Verificar estado antes de agir
+cy.get('button').should('be.enabled').click();
 
-// Ver o estado atual
-Cypress.state();
-
-// Ver configurações
-Cypress.config();
-
-// Ver variáveis de ambiente
-Cypress.env();
+// Usar should() para aguardar condições
+cy.get('.products-table tbody tr')
+  .should('have.length.greaterThan', 0)
+  .then(($rows) => {
+    // Agora é seguro usar $rows
+  });
 ```
 
----
+## Comandos de Debug
 
-## Modo Headless com Debug
-
-Para ver logs no modo headless:
+### Executar Teste Específico
 
 ```bash
-# Roda com logs detalhados
-npx cypress run --spec "cypress/e2e/admin-product-management.cy.ts" --browser chrome
+# Teste específico
+npx cypress run --spec "cypress/e2e/user-shopping-flow.cy.ts"
 
-# Salva vídeo e screenshots
-npx cypress run --spec "cypress/e2e/admin-product-management.cy.ts" --record
+# Com browser específico
+npx cypress run --browser chrome --spec "cypress/e2e/*.cy.ts"
+
+# Modo headed (ver execução)
+npx cypress run --headed --spec "cypress/e2e/admin-product-management.cy.ts"
 ```
 
----
+### Debug Interativo
 
-## Troubleshooting Comum
+```bash
+# Abrir Cypress UI
+npx cypress open
 
-### Problema: Elemento não encontrado
+# Com configuração específica
+npx cypress open --config video=true,screenshotOnRunFailure=true
 
-```typescript
-// Adicione wait ou should para aguardar
-cy.get('.products-table', { timeout: 10000 }).should('exist');
+# Com variável de ambiente
+CYPRESS_BASE_URL=http://localhost:3000 npx cypress open
 ```
 
-### Problema: Timing issues
+### Logs Detalhados
 
-```typescript
-// Use cy.wait() com cuidado
-cy.wait(1000); // Aguarda 1 segundo
+```bash
+# Debug completo
+DEBUG=cypress:* npx cypress run
 
-// Melhor: aguarde um elemento específico
-cy.get('.loading-spinner').should('not.exist');
-cy.get('.products-table').should('be.visible');
+# Debug específico
+DEBUG=cypress:server:* npx cypress run
+DEBUG=cypress:launcher npx cypress run
 ```
 
-### Problema: Seletor errado
+## Técnicas de Debug
+
+### 1. Usar cy.log() e cy.debug()
 
 ```typescript
-// Debug: Liste todos os seletores disponíveis
-cy.get('body').then(($body) => {
-  const allClasses = [];
-  $body.find('*').each((i, el) => {
-    const classes = $(el).attr('class');
-    if (classes) allClasses.push(classes);
+it('debug example', () => {
+  cy.visit('/products');
+
+  cy.get('.products-table tbody tr').then(($rows) => {
+    cy.log(`Found ${$rows.length} products`);
+    cy.debug(); // Pausa execução no DevTools
   });
-  console.log('All classes:', [...new Set(allClasses)]);
 });
 ```
+
+### 2. Screenshots e Vídeos
+
+```typescript
+// Screenshot manual
+cy.screenshot('before-action');
+cy.get('button').click();
+cy.screenshot('after-action');
+
+// Configurar no cypress.config.ts
+export default defineConfig({
+  e2e: {
+    video: true,
+    screenshotOnRunFailure: true,
+    videosFolder: 'cypress/videos',
+    screenshotsFolder: 'cypress/screenshots',
+  },
+});
+```
+
+### 3. Interceptar Requisições
+
+```typescript
+// Interceptar e debugar API calls
+cy.intercept('GET', '/api/products').as('getProducts');
+
+cy.visit('/products');
+cy.wait('@getProducts').then((interception) => {
+  cy.log('API Response:', interception.response.body);
+});
+```
+
+### 4. Verificar Estado da Aplicação
+
+```typescript
+// Acessar store Angular
+cy.window().then((win) => {
+  const store = win['ng'].getInjector().get('ProductStore');
+  cy.log('Store products:', store.products());
+});
+
+// Verificar localStorage
+cy.window().then((win) => {
+  const cartData = win.localStorage.getItem('cart_items');
+  cy.log('Cart data:', cartData);
+});
+```
+
+## Configurações de Debug
+
+### cypress.config.ts
+
+```typescript
+export default defineConfig({
+  e2e: {
+    baseUrl: 'http://localhost:4200',
+
+    // Debug settings
+    video: true,
+    screenshotOnRunFailure: true,
+    trashAssetsBeforeRuns: true,
+
+    // Timeouts
+    defaultCommandTimeout: 10000,
+    requestTimeout: 10000,
+    responseTimeout: 10000,
+    pageLoadTimeout: 30000,
+
+    // Retry
+    retries: {
+      runMode: 2,
+      openMode: 0,
+    },
+
+    // Viewport
+    viewportWidth: 1280,
+    viewportHeight: 720,
+  },
+});
+```
+
+### Variáveis de Ambiente
+
+```bash
+# .env ou export
+CYPRESS_BASE_URL=http://localhost:4200
+CYPRESS_VIDEO=true
+CYPRESS_SCREENSHOTS=true
+DEBUG=cypress:server:*
+```
+
+## Padrões de Debug
+
+### Template de Teste com Debug
+
+```typescript
+describe('Feature Debug', () => {
+  beforeEach(() => {
+    cy.log('=== Starting test ===');
+    cy.visit('/page');
+
+    // Aguardar página carregar
+    cy.get('h1').should('be.visible');
+    cy.get('.loading-spinner').should('not.exist');
+  });
+
+  it('should debug step by step', () => {
+    // Step 1: Log estado inicial
+    cy.log('Step 1: Check initial state');
+    cy.get('body').then(($body) => {
+      cy.log('Page loaded, body classes:', $body.attr('class'));
+    });
+
+    // Step 2: Ação
+    cy.log('Step 2: Perform action');
+    cy.get('[data-cy=button]').should('be.visible').click();
+
+    // Step 3: Verificar resultado
+    cy.log('Step 3: Verify result');
+    cy.get('[data-cy=result]').should('be.visible');
+
+    // Debug final
+    cy.debug();
+  });
+});
+```
+
+### Aguardar Condições Complexas
+
+```typescript
+// Aguardar múltiplas condições
+cy.get('.products-table')
+  .should('be.visible')
+  .and('not.have.class', 'loading')
+  .find('tbody tr')
+  .should('have.length.greaterThan', 0);
+
+// Aguardar com retry customizado
+function waitForProducts() {
+  cy.get('body').then(($body) => {
+    if ($body.find('.empty-state').length > 0) {
+      cy.log('Empty state - no products');
+      return;
+    }
+
+    cy.get('.products-table tbody tr').should('have.length.greaterThan', 0);
+  });
+}
+```
+
+## Troubleshooting por Categoria
+
+### Timing Issues
+
+- Use `cy.should()` em vez de `cy.wait(timeout)`
+- Aguarde elementos específicos, não tempos fixos
+- Verifique se elementos estão visíveis antes de interagir
+
+### State Issues
+
+- Use `cy.reload()` para reinicializar aplicação
+- Verifique localStorage/sessionStorage
+- Intercepte APIs para verificar dados
+
+### Selector Issues
+
+- Use seletores estáveis (`data-cy`, `data-testid`)
+- Evite seletores baseados em CSS/estrutura
+- Prefira texto visível quando possível
+
+### Performance Issues
+
+- Configure timeouts apropriados
+- Use `cy.intercept()` para mockar APIs lentas
+- Otimize seletores complexos
+
+## Recursos
+
+- [Cypress Debugging Guide](https://docs.cypress.io/guides/guides/debugging)
+- [Best Practices](https://docs.cypress.io/guides/references/best-practices)
+- [Troubleshooting](https://docs.cypress.io/guides/references/troubleshooting)
+- [Configuration](https://docs.cypress.io/guides/references/configuration)

@@ -4,7 +4,7 @@
 [![Deploy](https://github.com/lucasdev10/Angular-Material-Signals-Vitest-Cypress/actions/workflows/deploy.yml/badge.svg)](https://github.com/lucasdev10/Angular-Material-Signals-Vitest-Cypress/actions/workflows/deploy.yml)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
-E-commerce study project built with Angular 21, demonstrating modern architecture, testing strategies, and best practices.
+Projeto de estudo de e-commerce construído com Angular 21, demonstrando arquitetura moderna, estratégias de teste e melhores práticas de desenvolvimento.
 
 ## 🏗️ Architecture
 
@@ -68,54 +68,54 @@ src/app/
 - Automatic token injection
 - Global error handling
 
-## 🚀 Tech Stack
+## 🚀 Stack Tecnológico
 
 - **Framework**: Angular 21
 - **UI Library**: Angular Material 21
-- **State Management**: Angular Signals
-- **Forms**: Reactive Forms with Signal-based API
+- **Gerenciamento de Estado**: Angular Signals
+- **Formulários**: Reactive Forms com API baseada em Signals
 - **HTTP Client**: Angular HttpClient
-- **Routing**: Angular Router with lazy loading
-- **Testing**: Vitest (unit) + Cypress (e2e)
+- **Roteamento**: Angular Router com lazy loading
+- **Testes**: Vitest (unitários) + Cypress (e2e)
 - **Linting**: ESLint + Angular ESLint
-- **Formatting**: Prettier
+- **Formatação**: Prettier
 - **Git Hooks**: Husky + lint-staged
 - **CI/CD**: GitHub Actions
 
-## 📦 Features
+## 📦 Funcionalidades
 
-- ✅ Product catalog with filtering
-- ✅ Shopping cart with persistence
-- ✅ Admin panel (CRUD operations)
-- ✅ Authentication & authorization
-- ✅ Role-based access control
-- ✅ Form validation
-- ✅ Responsive design
+- ✅ Catálogo de produtos com filtros
+- ✅ Carrinho de compras com persistência
+- ✅ Painel administrativo (operações CRUD)
+- ✅ Autenticação e autorização
+- ✅ Controle de acesso baseado em roles
+- ✅ Validação de formulários
+- ✅ Design responsivo
 - ✅ Lazy loading
-- ✅ Performance optimizations
+- ✅ Otimizações de performance
 
-## 🛠️ Development
+## 🛠️ Desenvolvimento
 
-### Prerequisites
+### Pré-requisitos
 
 - Node.js 22+
 - npm 10+
 
-### Installation
+### Instalação
 
 ```bash
 npm install
 ```
 
-### Development Server
+### Servidor de Desenvolvimento
 
 ```bash
 npm start
-# or
+# ou
 ng serve
 ```
 
-Navigate to `http://localhost:4200/`
+Navegue para `http://localhost:4200/`
 
 ### Build
 
@@ -123,258 +123,249 @@ Navigate to `http://localhost:4200/`
 npm run build
 ```
 
-Build artifacts will be stored in the `dist/` directory.
+Os artefatos de build serão armazenados no diretório `dist/`.
 
-## 🧪 Testing
+## 🧪 Testes
 
-### Unit Tests (Vitest)
-
-```bash
-npm test                 # Run tests in watch mode
-npm run test:coverage    # Run tests with coverage report
-```
-
-**Current Coverage**: ~70% (target: 80%)
-
-### E2E Tests (Cypress)
+### Testes Unitários (Vitest)
 
 ```bash
-npm run cypress          # Open Cypress UI
-npm run cypress:headless # Run tests headlessly
+npm test                 # Executar testes em modo watch
+npm run test:coverage    # Executar testes com relatório de cobertura
 ```
 
-**Test Suites**:
+### Testes E2E (Cypress)
 
-- User shopping flow
-- Admin product management
-- Cart calculations
-- Product list preservation
+```bash
+npm run cypress          # Abrir interface do Cypress
+npm run cypress:headless # Executar testes em modo headless
+```
 
-## 📊 Code Quality
+**Suítes de Teste**:
+
+- Fluxo de compra do usuário
+- Gerenciamento de produtos do admin
+- Cálculos do carrinho
+- Preservação da lista de produtos
+
+## 📊 Qualidade de Código
 
 ### Linting
 
 ```bash
-npm run lint             # Check for linting errors
-npm run lint:fix         # Fix linting errors automatically
+npm run lint             # Verificar erros de linting
+npm run lint:fix         # Corrigir erros de linting automaticamente
 ```
 
-**ESLint Configuration**:
+**Configuração ESLint**:
 
-- Angular ESLint rules
-- TypeScript strict mode
-- No `any` types (enforced)
-- Consistent code style
+- Regras do Angular ESLint
+- Modo strict do TypeScript
+- Proibição de tipos `any` (obrigatório)
+- Estilo de código consistente
 
-### Formatting
+### Formatação
 
 ```bash
-npm run format           # Format all files
-npm run format:check     # Check formatting
+npm run format           # Formatar todos os arquivos
+npm run format:check     # Verificar formatação
 ```
 
-**Prettier Configuration**:
+**Configuração Prettier**:
 
-- Print width: 100
-- Single quotes
-- Angular HTML parser
+- Largura de impressão: 100
+- Aspas simples
+- Parser HTML do Angular
 
 ### Pre-commit Hooks
 
-Husky + lint-staged automatically run on commit:
+Husky + lint-staged executam automaticamente no commit:
 
-- ESLint on `.ts` files
-- Prettier on all files
-- Prevents committing broken code
+- ESLint em arquivos `.ts`
+- Prettier em todos os arquivos
+- Previne commit de código quebrado
 
-## 🔒 Security
+## 🔒 Segurança
 
-- ✅ Protected admin routes with guards
-- ✅ JWT token authentication (simulated)
-- ✅ Role-based access control
-- ✅ Input sanitization
-- ✅ XSS protection (Angular built-in)
-- ✅ HTTP interceptors for auth & errors
+- ✅ Rotas administrativas protegidas com guards
+- ✅ Autenticação JWT (simulada)
+- ✅ Controle de acesso baseado em roles
+- ✅ Sanitização de entrada
+- ✅ Proteção XSS (integrada ao Angular)
+- ✅ Interceptors HTTP para auth e erros
 
-See [SECURITY_GUIDE.md](docs/SECURITY_GUIDE.md) for details.
+Veja [SECURITY_GUIDE.md](docs/SECURITY_GUIDE.md) para detalhes.
 
-## ♿ Accessibility
+## ♿ Acessibilidade
 
-This project implements WCAG 2.1 Level AA accessibility standards:
+Este projeto implementa padrões de acessibilidade WCAG 2.1 Nível AA:
 
-- ✅ Semantic HTML with proper landmarks (main, nav, header)
-- ✅ ARIA attributes for screen reader support
-- ✅ Keyboard navigation (Tab, Enter, Escape)
-- ✅ Focus management and visible indicators
-- ✅ Descriptive labels and alt text
-- ✅ Live regions for dynamic content
-- ✅ Form validation with accessible error messages
-- ✅ Color contrast compliance
+- ✅ HTML semântico com landmarks apropriados (main, nav, header)
+- ✅ Atributos ARIA para suporte a leitores de tela
+- ✅ Navegação por teclado (Tab, Enter, Escape)
+- ✅ Gerenciamento de foco e indicadores visíveis
+- ✅ Labels descritivos e texto alternativo
+- ✅ Regiões live para conteúdo dinâmico
+- ✅ Validação de formulário com mensagens de erro acessíveis
+- ✅ Conformidade com contraste de cores
 
-**Key Features**:
+**Funcionalidades Principais**:
 
-- All interactive elements keyboard accessible
-- Dynamic aria-labels for context-aware descriptions
-- Proper heading hierarchy throughout
-- Screen reader tested with NVDA/VoiceOver
+- Todos os elementos interativos acessíveis por teclado
+- Labels aria dinâmicos para descrições contextuais
+- Hierarquia de cabeçalhos adequada
+- Testado com leitores de tela NVDA/VoiceOver
 
-See [ACCESSIBILITY.md](docs/ACCESSIBILITY.md) for complete implementation guide.
+Veja [ACCESSIBILITY.md](docs/ACCESSIBILITY.md) para guia completo de implementação.
 
-### Testing Accessibility
+### Testando Acessibilidade
 
 ```bash
-npm run cypress          # Includes accessibility test suite
-npm run test:a11y        # Run accessibility-specific tests
+npm run cypress          # Inclui suíte de testes de acessibilidade
+npm run test:a11y        # Executar testes específicos de acessibilidade
 ```
 
 ## ⚡ Performance
 
-This project is optimized for excellent Lighthouse scores and fast user experience:
+Este projeto é otimizado para excelentes pontuações no Lighthouse e experiência rápida do usuário:
 
-- ✅ Lighthouse Performance Score: 90+
+- ✅ Pontuação de Performance no Lighthouse: 90+
 - ✅ First Contentful Paint (FCP): < 1.8s
 - ✅ Largest Contentful Paint (LCP): < 2.5s
 - ✅ Time to Interactive (TTI): < 3.8s
 - ✅ Cumulative Layout Shift (CLS): < 0.1
 
-**Key Optimizations**:
+**Otimizações Principais**:
 
-- Code splitting and lazy loading for all routes
-- Image lazy loading with Intersection Observer
-- Zoneless change detection (experimental)
-- OnPush change detection strategy
-- Critical CSS inlining
-- Async font loading with font-display: swap
-- HTTP caching and Fetch API
-- Web Vitals monitoring
-- PWA-ready with manifest
+- Code splitting e lazy loading para todas as rotas
+- Lazy loading de imagens com Intersection Observer
+- Detecção de mudanças zoneless (experimental)
+- Estratégia de detecção OnPush
+- Inlining de CSS crítico
+- Carregamento assíncrono de fontes com font-display: swap
+- Cache HTTP e Fetch API
+- Monitoramento de Web Vitals
+- Pronto para PWA com manifest
 
-See [PERFORMANCE.md](docs/PERFORMANCE.md) for complete optimization guide.
+Veja [PERFORMANCE.md](docs/PERFORMANCE.md) para guia completo de otimização.
 
-### Testing Performance
+### Testando Performance
 
 ```bash
-npm run build            # Build for production
-npx lighthouse http://localhost:4200 --view  # Run Lighthouse audit
+npm run build            # Build para produção
+npx lighthouse http://localhost:4200 --view  # Executar auditoria Lighthouse
 ```
 
 ## 🐳 Docker
 
-The application is fully containerized and ready for deployment:
+A aplicação está totalmente containerizada e pronta para deploy:
 
-- ✅ Multi-stage Dockerfile for optimal image size (~50 MB)
-- ✅ Docker Compose for easy local deployment
-- ✅ Nginx configuration with caching and security headers
-- ✅ Health checks and monitoring
-- ✅ GitHub Container Registry integration
+- ✅ Dockerfile multi-stage para tamanho otimizado de imagem (~50 MB)
+- ✅ Docker Compose para deploy local fácil
+- ✅ Configuração Nginx com cache e headers de segurança
+- ✅ Health checks e monitoramento
+- ✅ Integração com GitHub Container Registry
 
-**Quick Start**:
+**Início Rápido**:
 
 ```bash
-# Using Docker Compose
+# Usando Docker Compose
 docker-compose up -d
 
-# Using Docker CLI
+# Usando Docker CLI
 docker build -t coffee-workshop .
 docker run -d -p 8080:80 coffee-workshop
 
-# Access application
+# Acessar aplicação
 open http://localhost:8080
 ```
 
-See [DOCKER.md](docs/DOCKER.md) for complete Docker guide.
+Veja [DOCKER.md](docs/DOCKER.md) para guia completo do Docker.
 
-## 🚀 Automated Deployment
+## 🚀 Deploy Automatizado
 
-CI/CD pipelines configured for automated deployments:
+Pipelines CI/CD configurados para deploys automatizados:
 
-- ✅ GitHub Actions workflows
-- ✅ Automated testing before deployment
-- ✅ Multi-environment support (dev, staging, production)
-- ✅ Docker image building and publishing
-- ✅ Platform deployments (Vercel, Netlify)
-- ✅ Rollback strategies
+- ✅ Workflows do GitHub Actions
+- ✅ Testes automatizados antes do deploy
+- ✅ Suporte a múltiplos ambientes (dev, staging, produção)
+- ✅ Build e publicação de imagens Docker
+- ✅ Deploys em plataformas (Vercel, Netlify)
+- ✅ Estratégias de rollback
 
-**Deployment Environments**:
+**Ambientes de Deploy**:
 
-- **Development**: Auto-deploy on push to `develop`
-- **Staging**: Preview deployments for PRs
-- **Production**: Auto-deploy on push to `main` or tags
+- **Development**: Auto-deploy no push para `develop`
+- **Staging**: Deploys de preview para PRs
+- **Production**: Auto-deploy no push para `main` ou tags
 
-**Supported Platforms**:
+**Plataformas Suportadas**:
 
-- Vercel (Recommended)
+- Vercel (Recomendado)
 - Netlify
 - Docker (Self-hosted)
 - AWS Amplify
 - Azure Static Web Apps
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for complete deployment guide.
+Veja [DEPLOYMENT.md](docs/DEPLOYMENT.md) para guia completo de deploy.
 
-## ⚡ Performance
+## 🔄 Pipeline CI/CD
 
-- ✅ Lazy loading (all feature modules)
-- ✅ Code splitting
-- ✅ OnPush change detection strategy
-- ✅ Computed signals (memoization)
-- ✅ TrackBy functions in lists
-- ✅ Optimized bundle size
+### Workflows do GitHub Actions
 
-See [PERFORMANCE_OPTIMIZATIONS.md](docs/PERFORMANCE_OPTIMIZATIONS.md) for details.
+**Pipeline CI** (`ci.yml`):
 
-## 🔄 CI/CD Pipeline
+- Executa em push/PR para main/develop
+- Verificações de linting e formatação
+- Testes unitários
+- Verificação de build
+- Upload de artefatos
 
-### GitHub Actions Workflows
+**Pipeline Deploy** (`deploy.yml`):
 
-**CI Pipeline** (`ci.yml`):
+- Deploy para GitHub Pages
+- Executa em push para main
+- Deploy automático
 
-- Runs on push/PR to main/develop
-- Linting & formatting checks
-- Unit tests
-- Build verification
-- Artifact upload
+**Verificações de PR** (`pr-checks.yml`):
 
-**Deploy Pipeline** (`deploy.yml`):
+- Valida pull requests
+- Feedback detalhado sobre qualidade do código
 
-- Deploys to GitHub Pages
-- Runs on push to main
-- Automatic deployment
+### Configurando GitHub Pages
 
-**PR Checks** (`pr-checks.yml`):
+1. Vá para Configurações do repositório → Pages
+2. Fonte: GitHub Actions
+3. A aplicação será deployada automaticamente no push para main
 
-- Validates pull requests
-- Detailed feedback on code quality
+## 📚 Documentação
 
-### Setting up GitHub Pages
+- [Guia de Arquitetura](docs/ARCHITECTURE.md) - Arquitetura completa do projeto
+- [Estratégia de Testes](docs/TESTING_STRATEGY.md) - Estratégias e padrões de teste
+- [Guia de Segurança](docs/SECURITY_GUIDE.md) - Implementações de segurança
+- [Otimizações de Performance](docs/PERFORMANCE.md) - Guia de performance
+- [Guia de Desenvolvimento](docs/DEVELOPMENT.md) - Setup e desenvolvimento
+- [Guia do Vitest](docs/VITEST_GUIDE.md) - Testes com Vitest
+- [Guia de Acessibilidade](docs/ACCESSIBILITY.md) - Implementação WCAG
+- [Guia de Deploy](docs/DEPLOYMENT.md) - Estratégias de deploy
+- [Guia do Docker](docs/DOCKER.md) - Containerização
+- [Ferramentas e Setup](docs/TOOLS_AND_SETUP.md) - Configuração e ferramentas
 
-1. Go to repository Settings → Pages
-2. Source: GitHub Actions
-3. The app will be deployed automatically on push to main
+## 🤝 Contribuindo
 
-## 📚 Documentation
+1. Faça um fork do repositório
+2. Crie uma branch de feature (`git checkout -b feature/funcionalidade-incrivel`)
+3. Faça commit das suas mudanças (`git commit -m 'Add: funcionalidade incrível'`)
+4. Faça push para a branch (`git push origin feature/funcionalidade-incrivel`)
+5. Abra um Pull Request
 
-- [Architecture Guide](docs/ARCHITECTURE.md)
-- [Testing Strategy](docs/TESTING_STRATEGY.md)
-- [Security Guide](docs/SECURITY_GUIDE.md)
-- [Performance Optimizations](docs/PERFORMANCE_OPTIMIZATIONS.md)
-- [Development Guide](docs/DEVELOPMENT.md)
-- [Project Checklist](docs/PROJECT_CHECKLIST.md)
+## 📝 Licença
 
-## 🤝 Contributing
+Este projeto é para fins educacionais.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## 🙏 Agradecimentos
 
-## 📝 License
-
-This project is for educational purposes.
-
-## 🙏 Acknowledgments
-
-- Angular Team for the amazing framework
-- Angular Material for the UI components
-- Vitest for fast unit testing
-- Cypress for reliable e2e testing
+- Time do Angular pelo framework incrível
+- Angular Material pelos componentes UI
+- Vitest pelos testes unitários rápidos
+- Cypress pelos testes e2e confiáveis

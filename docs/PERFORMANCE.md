@@ -1,14 +1,14 @@
-# ⚡ Performance Optimization Guide
+# ⚡ Guia Completo de Performance
 
-## Overview
+## Visão Geral
 
-This document outlines all performance optimizations implemented in the Coffee Workshop application to achieve excellent Lighthouse scores and provide a fast user experience.
+Este documento descreve todas as otimizações de performance implementadas na aplicação Coffee Workshop para alcançar excelentes pontuações no Lighthouse e proporcionar uma experiência rápida ao usuário.
 
 ---
 
-## 🎯 Performance Goals
+## 🎯 Metas de Performance
 
-### Target Metrics (Lighthouse)
+### Métricas Alvo (Lighthouse)
 
 - **Performance Score**: 90+
 - **First Contentful Paint (FCP)**: < 1.8s
@@ -19,7 +19,121 @@ This document outlines all performance optimizations implemented in the Coffee W
 
 ---
 
-## 🚀 Implemented Optimizations
+## 🚀 Otimizações Implementadas
+
+### 1. Lazy Loading
+
+Todas as rotas principais utilizam lazy loading para carregar módulos sob demanda:
+
+```typescript
+// src/app/app.routes.ts
+{
+  path: 'products',
+  loadChildren: () => import('./features/products/products.route').then((r) => r.PRODUCT_ROUTES),
+},
+{
+  path: 'admin',
+  canActivate: [authGuard, roleGuard],
+  loadChildren: () => import('./features/admin/admin.routes').then((r) => r.ADMIN_ROUTES),
+}
+```
+
+**Benefícios:**
+
+- Redução do bundle inicial
+- Carregamento mais rápido da aplicação
+- Melhor experiência do usuário
+
+### 2. Code Splitting
+
+O code splitting é automaticamente aplicado através do lazy loading das rotas. Cada feature module é dividido em chunks separados.
+
+**Resultado:**
+
+- Bundles menores e mais gerenciáveis
+- Carregamento paralelo de recursos
+- Cache mais eficiente
+
+### 3. Memoização com Computed Signals
+
+Todos os stores utilizam `computed()` signals para memoizar valores derivados:
+
+```typescript
+// src/app/features/products/store/product.store.ts
+readonly filteredProducts = computed(() => {
+  const products = this.state().products;
+  const filters = this.state().filters;
+  return products.filter(/* lógica de filtro */);
+});
+
+readonly productCount = computed(() => this.products().length);
+readonly categories = computed(() => {
+  const products = this.products();
+  return [...new Set(products.map((p) => p.category))].sort();
+});
+```
+
+**Benefícios:**
+
+- Recalcula apenas quando dependências mudam
+- Evita computações desnecessárias
+- Performance otimizada automaticamente
+
+### 4. ChangeDetectionStrategy.OnPush
+
+Todos os componentes utilizam `OnPush` para otimizar a detecção de mudanças:
+
+```typescript
+@Component({
+  selector: 'app-product-card',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ProductCardComponent {
+  product = input.required<IProduct>();
+}
+```
+
+**Componentes com OnPush:**
+
+- ✅ App (root component)
+- ✅ HeaderComponent
+- ✅ ProductListPageComponent
+- ✅ ProductCardComponent
+- ✅ CartPage
+- ✅ AdminProductsPageComponent
+- ✅ AdminProductFormPageComponent
+- ✅ AdminDashboardPageComponent
+- ✅ LoginPageComponent
+- ✅ UserFormPageComponent
+- ✅ Todos os componentes shared
+
+**Benefícios:**
+
+- Reduz drasticamente o número de verificações de mudança
+- Melhora a performance em listas grandes
+- Componentes só re-renderizam quando inputs mudam
+
+### 5. TrackBy Functions
+
+Todas as listas utilizam `track` para otimizar renderização:
+
+```typescript
+// src/app/features/products/pages/product-list-page/product-list-page.html
+@for (product of products(); track product.id) {
+  <app-product-card [product]="product" />
+}
+
+// src/app/features/cart/pages/cart-page/cart-page.html
+@for (item of items(); track item.product.id) {
+  <mat-card class="cart-item">...</mat-card>
+}
+```
+
+**Benefícios:**
+
+- Angular reutiliza elementos DOM existentes
+- Evita re-renderização completa da lista
+- Melhor performance em listas dinâmicas
 
 ### 1. Build Optimizations
 
