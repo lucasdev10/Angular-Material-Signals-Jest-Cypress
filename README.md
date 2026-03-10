@@ -6,67 +6,67 @@
 
 Projeto de estudo de e-commerce construído com Angular 21, demonstrando arquitetura moderna, estratégias de teste e melhores práticas de desenvolvimento.
 
-## 🏗️ Architecture
+## 🏗️ Arquitetura
 
-This project follows a **feature-based architecture** with clear separation of concerns:
+Este projeto segue uma **arquitetura baseada em features** com clara separação de responsabilidades:
 
 ```
 src/app/
-├── core/                    # Core functionality (singleton services)
-│   ├── guards/             # Route guards (auth, role, unsaved-changes)
-│   ├── interceptors/       # HTTP interceptors (auth, error handling)
-│   ├── layout/             # Layout components (header, footer)
-│   ├── storage/            # Storage service (localStorage wrapper)
-│   └── http/               # HTTP client wrapper
+├── core/                    # Funcionalidades centrais (serviços singleton)
+│   ├── guards/             # Guards de rota (auth, role, unsaved-changes)
+│   ├── interceptors/       # Interceptors HTTP (auth, tratamento de erros)
+│   ├── layout/             # Componentes de layout (header, footer)
+│   ├── storage/            # Serviço de storage (wrapper do localStorage)
+│   └── http/               # Wrapper do cliente HTTP
 │
-├── features/               # Feature modules (lazy-loaded)
-│   ├── products/          # Product management
-│   │   ├── components/    # Feature-specific components
-│   │   ├── pages/         # Route components
-│   │   ├── store/         # State management (Signals)
-│   │   ├── repositories/  # Data access layer
-│   │   ├── models/        # TypeScript interfaces
-│   │   └── integration/   # Integration tests
+├── features/               # Módulos de features (lazy-loaded)
+│   ├── products/          # Gerenciamento de produtos
+│   │   ├── components/    # Componentes específicos da feature
+│   │   ├── pages/         # Componentes de rota
+│   │   ├── store/         # Gerenciamento de estado (Signals)
+│   │   ├── repositories/  # Camada de acesso a dados
+│   │   ├── models/        # Interfaces TypeScript
+│   │   └── integration/   # Testes de integração
 │   │
-│   ├── cart/              # Shopping cart
-│   ├── admin/             # Admin panel (protected)
-│   ├── auth/              # Authentication
-│   └── user/              # User management
+│   ├── cart/              # Carrinho de compras
+│   ├── admin/             # Painel administrativo (protegido)
+│   ├── auth/              # Autenticação
+│   └── user/              # Gerenciamento de usuários
 │
-└── shared/                 # Shared resources
-    ├── components/        # Reusable components
-    ├── directives/        # Custom directives
-    ├── pipes/             # Custom pipes
-    ├── validators/        # Form validators
-    └── utils/             # Utility functions
+└── shared/                 # Recursos compartilhados
+    ├── components/        # Componentes reutilizáveis
+    ├── directives/        # Diretivas customizadas
+    ├── pipes/             # Pipes customizados
+    ├── validators/        # Validadores de formulário
+    └── utils/             # Funções utilitárias
 ```
 
-### Key Architectural Decisions
+### Principais Decisões Arquiteturais
 
-**State Management**: Angular Signals (v16+)
+**Gerenciamento de Estado**: Angular Signals (v16+)
 
-- Reactive state with automatic change detection
-- Computed values with automatic memoization
-- Better performance than traditional RxJS BehaviorSubjects
+- Estado reativo com detecção automática de mudanças
+- Valores computados com memoização automática
+- Melhor performance que os tradicionais RxJS BehaviorSubjects
 
-**Lazy Loading**: All feature modules are lazy-loaded
+**Lazy Loading**: Todos os módulos de features são carregados sob demanda
 
-- Reduces initial bundle size
-- Improves application startup time
-- Better code splitting
+- Reduz o tamanho do bundle inicial
+- Melhora o tempo de inicialização da aplicação
+- Melhor divisão de código
 
-**Repository Pattern**: Separation of data access logic
+**Padrão Repository**: Separação da lógica de acesso a dados
 
-- Abstracts API calls from business logic
-- Easier to test and mock
-- Centralized data transformation
+- Abstrai chamadas de API da lógica de negócio
+- Mais fácil de testar e mockar
+- Transformação de dados centralizada
 
-**Guards & Interceptors**: Security and HTTP handling
+**Guards & Interceptors**: Segurança e tratamento HTTP
 
-- Authentication guard for protected routes
-- Role-based access control
-- Automatic token injection
-- Global error handling
+- Guard de autenticação para rotas protegidas
+- Controle de acesso baseado em roles
+- Injeção automática de token
+- Tratamento global de erros
 
 ## 🚀 Stack Tecnológico
 
