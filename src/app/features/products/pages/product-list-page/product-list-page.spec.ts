@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CartStore } from '@app/features/cart/store/cart.store';
-import moment from 'moment';
+import { DateUtils } from '@app/shared';
 import { delay, of, throwError } from 'rxjs';
 import { IProduct } from '../../models/product.model';
 import { ProductRepository } from '../../repositories/product.repository';
@@ -25,8 +25,8 @@ describe('ProductListPageComponent', () => {
       category: 'Coffee',
       stock: 10,
       rating: 4.5,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     },
     {
       id: '2',
@@ -37,8 +37,8 @@ describe('ProductListPageComponent', () => {
       category: 'Electronics',
       stock: 5,
       rating: 4.0,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     },
   ];
 

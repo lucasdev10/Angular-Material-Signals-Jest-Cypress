@@ -1,6 +1,7 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { StorageService } from '@app/core/storage/storage';
 import { IProduct } from '@app/features/products/models/product.model';
+import { APP_CONFIG } from '@app/shared/config/app.config';
 import { ICart, ICartItem } from '../models/cart.model';
 
 /**
@@ -12,12 +13,12 @@ import { ICart, ICartItem } from '../models/cart.model';
 })
 export class CartStore {
   private readonly storageService = inject(StorageService<ICart>);
-  private readonly STORAGE_KEY = 'cart';
+  private readonly STORAGE_KEY = APP_CONFIG.storage.CART_KEY;
 
-  // Taxas e configurações
-  private readonly TAX_RATE = 0.1; // 10%
-  private readonly SHIPPING_THRESHOLD = 100; // Frete grátis acima de $100
-  private readonly SHIPPING_COST = 10;
+  // Configurações do carrinho
+  private readonly TAX_RATE = APP_CONFIG.cart.TAX_RATE;
+  private readonly SHIPPING_THRESHOLD = APP_CONFIG.cart.SHIPPING_THRESHOLD;
+  private readonly SHIPPING_COST = APP_CONFIG.cart.SHIPPING_COST;
 
   // Estado privado
   private readonly state = signal<ICart>(this.loadFromStorage());
@@ -46,19 +47,56 @@ export class CartStore {
    */
 
   addItem(product: IProduct, quantity = 1): void {
+    // Validações de entrada
+    if (!product?.id) {
+      throw new Error('Product is required and must have an ID');
+    }
+
+    if (!Number.isInteger(quantity) || quantity < APP_CONFIG.cart.MIN_QUANTITY_PER_ITEM) {
+      throw new Error(
+        `Quantity must be a positive integer (minimum: ${APP_CONFIG.cart.MIN_QUANTITY_PER_ITEM})`,
+      );
+    }
+
+    if (quantity > APP_CONFIG.cart.MAX_QUANTITY_PER_ITEM) {
+      throw new Error(`Quantity cannot exceed ${APP_CONFIG.cart.MAX_QUANTITY_PER_ITEM}`);
+    }
+
+    if (product.stock <= 0) {
+      throw new Error('Product is out of stock');
+    }
+
+    if (quantity > product.stock) {
+      throw new Error(`Only ${product.stock} items available in stock`);
+    }
+
     const currentItems = this.items();
     const existingItemIndex = currentItems.findIndex((item) => item.product.id === product.id);
 
     let updatedItems: ICartItem[];
 
     if (existingItemIndex !== -1) {
+      const existingItem = currentItems[existingItemIndex];
+      const newQuantity = existingItem.quantity + quantity;
+
+      // Verificar se a nova quantidade não excede o estoque
+      if (newQuantity > product.stock) {
+        throw new Error(
+          `Cannot add ${quantity} items. Only ${product.stock - existingItem.quantity} more items available`,
+        );
+      }
+
+      if (newQuantity > APP_CONFIG.cart.MAX_QUANTITY_PER_ITEM) {
+        throw new Error(`Total quantity cannot exceed ${APP_CONFIG.cart.MAX_QUANTITY_PER_ITEM}`);
+      }
+
       // Atualiza quantidade do item existente
       updatedItems = currentItems.map((item, index) =>
         index === existingItemIndex
           ? {
               ...item,
-              quantity: item.quantity + quantity,
-              subtotal: (item.quantity + quantity) * product.price,
+              quantity: newQuantity,
+              subtotal: newQuantity * product.price,
             }
           : item,
       );
@@ -76,17 +114,49 @@ export class CartStore {
   }
 
   removeItem(productId: string): void {
+    if (!productId?.trim()) {
+      throw new Error('Product ID is required');
+    }
+
     const updatedItems = this.items().filter((item) => item.product.id !== productId);
     this.updateCart(updatedItems);
   }
 
   updateQuantity(productId: string, quantity: number): void {
-    if (quantity <= 0) {
+    if (!productId?.trim()) {
+      throw new Error('Product ID is required');
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 0) {
+      throw new Error('Quantity must be a non-negative integer');
+    }
+
+    if (quantity === 0) {
       this.removeItem(productId);
       return;
     }
 
-    const updatedItems = this.items().map((item) =>
+    if (quantity < APP_CONFIG.cart.MIN_QUANTITY_PER_ITEM) {
+      throw new Error(`Quantity must be at least ${APP_CONFIG.cart.MIN_QUANTITY_PER_ITEM}`);
+    }
+
+    if (quantity > APP_CONFIG.cart.MAX_QUANTITY_PER_ITEM) {
+      throw new Error(`Quantity cannot exceed ${APP_CONFIG.cart.MAX_QUANTITY_PER_ITEM}`);
+    }
+
+    const currentItems = this.items();
+    const existingItem = currentItems.find((item) => item.product.id === productId);
+
+    if (!existingItem) {
+      throw new Error('Product not found in cart');
+    }
+
+    // Verificar estoque disponível
+    if (quantity > existingItem.product.stock) {
+      throw new Error(`Only ${existingItem.product.stock} items available in stock`);
+    }
+
+    const updatedItems = currentItems.map((item) =>
       item.product.id === productId
         ? {
             ...item,

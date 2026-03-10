@@ -78,7 +78,12 @@ export class UserFormPageComponent {
     const user = this.userStore.users().find((u) => u.id === id);
 
     if (user) {
-      this.userModel.set({ ...user });
+      this.userModel.set({
+        email: user.email,
+        fullName: user.fullName,
+        password: user.password || '',
+        role: user.role,
+      });
       this.isLoading.set(false);
     } else {
       this.router.navigate(['/admin/products']);

@@ -3,8 +3,8 @@ import { CartStore } from '@app/features/cart/store/cart.store';
 import { IProduct } from '@app/features/products/models/product.model';
 import { ProductRepository } from '@app/features/products/repositories/product.repository';
 import { ProductStore } from '@app/features/products/store/product.store';
+import { DateUtils } from '@app/shared';
 import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
 import { of } from 'rxjs';
 
 /**
@@ -26,8 +26,8 @@ describe('Product Flow Integration Tests', () => {
       category: 'Food',
       stock: 50,
       rating: 4.5,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     },
     {
       id: Utils.generateId(),
@@ -38,8 +38,8 @@ describe('Product Flow Integration Tests', () => {
       category: 'Electronics',
       stock: 15,
       rating: 4.8,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     },
   ];
 

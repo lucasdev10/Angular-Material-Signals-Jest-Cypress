@@ -1,173 +1,586 @@
 import { TestBed } from '@angular/core/testing';
-import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
-import { firstValueFrom } from 'rxjs';
-import { STORAGE_MOCK, StorageMock } from '../data/mock-data.service';
+import { MockDataService, STORAGE_MOCK } from '../data/mock-data.service';
 import { HttpService } from './http';
 
-describe('HttpService', () => {
-  let service: HttpService<{ id?: string }>;
+interface TestItem {
+  id?: string;
+  name: string;
+  value: number;
+}
 
-  const products = [
-    {
-      id: Utils.generateId(),
-      name: 'Premium Coffee Beans',
-      description: 'Arabica blend from Colombia with rich flavor notes',
-      price: 29.99,
-      image: '/assets/images/coffee.jpg',
-      category: 'Food',
-      stock: 50,
-      rating: 4.5,
-      createdAt: moment('2026-01-01').unix(),
-      updatedAt: moment('2026-01-01').unix(),
-    },
-    {
-      id: Utils.generateId(),
-      name: 'Espresso Machine Pro',
-      description: 'Professional grade espresso maker with 15 bar pressure',
-      price: 499.99,
-      image: '/assets/images/coffee.jpg',
-      category: 'Electronics',
-      stock: 15,
-      rating: 4.8,
-      createdAt: moment('2026-01-02').unix(),
-      updatedAt: moment('2026-01-02').unix(),
-    },
+describe('HttpService', () => {
+  let httpService: HttpService<TestItem>;
+  let mockDataService: MockDataService;
+
+  const testCollection = 'test-items';
+  const mockItems: TestItem[] = [
+    { id: 'item-1', name: 'Item 1', value: 100 },
+    { id: 'item-2', name: 'Item 2', value: 200 },
+    { id: 'item-3', name: 'Item 3', value: 300 },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [StorageMock],
+      providers: [HttpService, MockDataService],
     });
-    service = TestBed.inject(HttpService);
-    vi.spyOn(STORAGE_MOCK, 'set');
+
+    httpService = TestBed.inject(HttpService);
+    mockDataService = TestBed.inject(MockDataService);
+
+    // Clear storage before each test
+    STORAGE_MOCK.clear();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  describe('get', () => {
+    it('should return collection data successfully', async () => {
+      STORAGE_MOCK.set(testCollection, mockItems);
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.get<TestItem[]>(testCollection).subscribe({
+          next: (result) => {
+            try {
+              expect(result).toEqual(mockItems);
+              expect(result.length).toBe(3);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should return 404 error for non-existent collection', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.get<TestItem[]>('non-existent').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Resource 'non-existent' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should simulate network delay', async () => {
+      STORAGE_MOCK.set(testCollection, mockItems);
+      const startTime = Date.now();
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.get<TestItem[]>(testCollection).subscribe({
+          next: () => {
+            try {
+              const endTime = Date.now();
+              const duration = endTime - startTime;
+              expect(duration).toBeGreaterThanOrEqual(500);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should handle empty collection', async () => {
+      STORAGE_MOCK.set(testCollection, []);
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.get<TestItem[]>(testCollection).subscribe({
+          next: (result) => {
+            try {
+              expect(result).toEqual([]);
+              expect(Array.isArray(result)).toBe(true);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
   });
 
-  it('should get data correctly', async () => {
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue(products);
+  describe('getById', () => {
+    beforeEach(() => {
+      STORAGE_MOCK.set(testCollection, mockItems);
+    });
 
-    const response = await firstValueFrom(service.get('/api/test'));
+    it('should return specific item by id', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.getById<TestItem>(testCollection, 'item-1').subscribe({
+          next: (result) => {
+            try {
+              expect(result).toEqual(mockItems[0]);
+              expect(result.id).toBe('item-1');
+              expect(result.name).toBe('Item 1');
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
 
-    expect(response).toEqual(products);
+    it('should return 404 error for non-existent item', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.getById<TestItem>(testCollection, 'non-existent').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Item with id 'non-existent' not found in 'test-items'");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should return 404 error for non-existent collection', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.getById<TestItem>('non-existent', 'item-1').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Collection 'non-existent' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should handle case-sensitive id matching', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.getById<TestItem>(testCollection, 'ITEM-1').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toContain('not found');
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
   });
 
-  it('should get with error', async () => {
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue(null);
+  describe('post', () => {
+    it('should add new item to collection', async () => {
+      STORAGE_MOCK.set(testCollection, [...mockItems]);
+      const newItem: TestItem = { name: 'New Item', value: 400 };
 
-    await expect(async () => {
-      await firstValueFrom(service.get('/api/test'));
-    }).rejects.toThrowError(`Resource '/api/test' not found`);
+      return new Promise<void>((resolve, reject) => {
+        httpService.post<TestItem>(testCollection, newItem).subscribe({
+          next: (result) => {
+            try {
+              expect(result.name).toBe('New Item');
+              expect(result.value).toBe(400);
+              expect(result.id).toBeTruthy();
+              expect(typeof result.id).toBe('string');
+
+              // Verify item was added to storage
+              const collection = STORAGE_MOCK.get(testCollection) as TestItem[];
+              expect(collection.length).toBe(4);
+              expect(collection.find((item) => item.id === result.id)).toBeTruthy();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should preserve existing id if provided', async () => {
+      STORAGE_MOCK.set(testCollection, [...mockItems]);
+      const newItem: TestItem = { id: 'custom-id', name: 'Custom Item', value: 500 };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.post<TestItem>(testCollection, newItem).subscribe({
+          next: (result) => {
+            try {
+              expect(result.id).toBe('custom-id');
+              expect(result.name).toBe('Custom Item');
+
+              // Verify item was added to storage
+              const collection = STORAGE_MOCK.get(testCollection) as TestItem[];
+              expect(collection.find((item) => item.id === 'custom-id')).toBeTruthy();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should create collection if it does not exist', async () => {
+      const newItem: TestItem = { name: 'First Item', value: 100 };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.post<TestItem>('new-collection', newItem).subscribe({
+          next: (result) => {
+            try {
+              expect(result.name).toBe('First Item');
+              expect(result.id).toBeTruthy();
+
+              // Verify collection was created
+              const collection = STORAGE_MOCK.get('new-collection') as TestItem[];
+              expect(collection).toBeTruthy();
+              expect(collection.length).toBe(1);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should generate unique ids for multiple items', async () => {
+      STORAGE_MOCK.set(testCollection, []);
+      const item1: TestItem = { name: 'Item 1', value: 100 };
+      const item2: TestItem = { name: 'Item 2', value: 200 };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.post<TestItem>(testCollection, item1).subscribe({
+          next: (result1) => {
+            httpService.post<TestItem>(testCollection, item2).subscribe({
+              next: (result2) => {
+                try {
+                  expect(result1.id).toBeTruthy();
+                  expect(result2.id).toBeTruthy();
+                  expect(result1.id).not.toBe(result2.id);
+                  resolve();
+                } catch (error) {
+                  reject(error);
+                }
+              },
+              error: reject,
+            });
+          },
+          error: reject,
+        });
+      });
+    });
   });
 
-  it('should get data empty correctly ', async () => {
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue([]);
+  describe('put', () => {
+    beforeEach(() => {
+      STORAGE_MOCK.set(testCollection, [...mockItems]);
+    });
 
-    const response = await firstValueFrom(service.get('/api/test'));
+    it('should update existing item', async () => {
+      const updateData: Partial<TestItem> = { name: 'Updated Item', value: 999 };
 
-    expect(response).toEqual([]);
+      return new Promise<void>((resolve, reject) => {
+        httpService.put<TestItem>(testCollection, 'item-1', updateData as TestItem).subscribe({
+          next: (result) => {
+            try {
+              expect(result.id).toBe('item-1');
+              expect(result.name).toBe('Updated Item');
+              expect(result.value).toBe(999);
+
+              // Verify item was updated in storage
+              const collection = STORAGE_MOCK.get(testCollection) as TestItem[];
+              const updatedItem = collection.find((item) => item.id === 'item-1');
+              expect(updatedItem?.name).toBe('Updated Item');
+              expect(updatedItem?.value).toBe(999);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should preserve id when updating', async () => {
+      const updateData: TestItem = { id: 'different-id', name: 'Updated', value: 500 };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.put<TestItem>(testCollection, 'item-1', updateData).subscribe({
+          next: (result) => {
+            try {
+              expect(result.id).toBe('item-1'); // Should preserve original id
+              expect(result.name).toBe('Updated');
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should return 404 error for non-existent item', async () => {
+      const updateData: TestItem = { name: 'Updated', value: 500 };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.put<TestItem>(testCollection, 'non-existent', updateData).subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Item with id 'non-existent' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should return 404 error for non-existent collection', async () => {
+      const updateData: TestItem = { name: 'Updated', value: 500 };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.put<TestItem>('non-existent', 'item-1', updateData).subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Collection 'non-existent' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should merge update data with existing item', async () => {
+      const updateData: Partial<TestItem> = { name: 'Updated Name Only' };
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.put<TestItem>(testCollection, 'item-1', updateData as TestItem).subscribe({
+          next: (result) => {
+            try {
+              expect(result.id).toBe('item-1');
+              expect(result.name).toBe('Updated Name Only');
+              expect(result.value).toBe(100); // Should preserve original value
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
   });
 
-  it('should get data by ID correctly', async () => {
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue(products);
+  describe('delete', () => {
+    beforeEach(() => {
+      STORAGE_MOCK.set(testCollection, [...mockItems]);
+    });
 
-    const response = await firstValueFrom(service.getById('/api/test', products[0].id));
+    it('should delete existing item', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.delete(testCollection, 'item-1').subscribe({
+          next: (result) => {
+            try {
+              expect(result).toBeUndefined();
 
-    expect(response).toEqual(products[0]);
+              // Verify item was removed from storage
+              const collection = STORAGE_MOCK.get(testCollection) as TestItem[];
+              expect(collection.length).toBe(2);
+              expect(collection.find((item) => item.id === 'item-1')).toBeUndefined();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should return 404 error for non-existent item', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.delete(testCollection, 'non-existent').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Item with id 'non-existent' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should return 404 error for non-existent collection', async () => {
+      return new Promise<void>((resolve, reject) => {
+        httpService.delete('non-existent', 'item-1').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Collection 'non-existent' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
+
+    it('should not affect other items when deleting', async () => {
+      const originalLength = mockItems.length;
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.delete(testCollection, 'item-2').subscribe({
+          next: () => {
+            try {
+              const collection = STORAGE_MOCK.get(testCollection) as TestItem[];
+              expect(collection.length).toBe(originalLength - 1);
+              expect(collection.find((item) => item.id === 'item-1')).toBeTruthy();
+              expect(collection.find((item) => item.id === 'item-3')).toBeTruthy();
+              expect(collection.find((item) => item.id === 'item-2')).toBeUndefined();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: reject,
+        });
+      });
+    });
+
+    it('should handle deleting from empty collection', async () => {
+      STORAGE_MOCK.set('empty-collection', []);
+
+      return new Promise<void>((resolve, reject) => {
+        httpService.delete('empty-collection', 'any-id').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              expect(error.message).toBe("Item with id 'any-id' not found");
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
   });
 
-  it('should get data with error by ID incorrectly', async () => {
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue(products);
+  describe('error handling and edge cases', () => {
+    it('should handle null collection gracefully', async () => {
+      STORAGE_MOCK.set(testCollection, null as any);
 
-    await expect(
-      async () => await firstValueFrom(service.getById('/api/test', '999')),
-    ).rejects.toThrowError(`Item with id '999' not found in '/api/test'`);
-  });
+      return new Promise<void>((resolve, reject) => {
+        httpService.get<TestItem[]>(testCollection).subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
 
-  it('should create data with ID correctly', async () => {
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue([]);
+    it('should handle undefined collection gracefully', async () => {
+      // Don't set anything in storage
 
-    const product = {
-      id: undefined,
-      name: 'Espresso Machine Pro',
-      description: 'Professional grade espresso maker with 15 bar pressure',
-      price: 499.99,
-      image: '/assets/images/coffee.jpg',
-      category: 'Electronics',
-      stock: 15,
-      rating: 4.8,
-      createdAt: moment('2026-01-02').unix(),
-      updatedAt: moment('2026-01-02').unix(),
-    };
+      return new Promise<void>((resolve, reject) => {
+        httpService.getById<TestItem>(testCollection, 'item-1').subscribe({
+          next: () => reject(new Error('Should have failed')),
+          error: (error) => {
+            try {
+              expect(error.status).toBe(404);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+        });
+      });
+    });
 
-    const response = await firstValueFrom(service.post('/api/test', product));
+    it('should maintain data integrity across operations', async () => {
+      STORAGE_MOCK.set(testCollection, [...mockItems]);
 
-    expect(response.id).toBeTruthy();
-    expect(response).toEqual({ ...product, id: response.id });
-  });
+      return new Promise<void>((resolve, reject) => {
+        // Add item
+        httpService.post<TestItem>(testCollection, { name: 'New', value: 400 }).subscribe({
+          next: (newItem) => {
+            // Update item
+            httpService
+              .put<TestItem>(testCollection, newItem.id!, { name: 'Updated', value: 500 })
+              .subscribe({
+                next: (updatedItem) => {
+                  // Get item
+                  httpService.getById<TestItem>(testCollection, updatedItem.id!).subscribe({
+                    next: (retrievedItem) => {
+                      try {
+                        expect(retrievedItem.name).toBe('Updated');
+                        expect(retrievedItem.value).toBe(500);
 
-  it('should update data correctly', async () => {
-    const id = Utils.generateId();
-
-    const currentProduct = {
-      id: id,
-      name: 'Espresso Machine Pro',
-      description: 'Professional grade espresso maker with 15 bar pressure',
-      price: 499.99,
-      image: '/assets/images/coffee.jpg',
-      category: 'Electronics',
-      stock: 15,
-      rating: 4.8,
-      createdAt: moment('2026-01-02').unix(),
-      updatedAt: moment('2026-01-02').unix(),
-    };
-
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue([currentProduct]);
-
-    const newProduct = {
-      id: id,
-      name: 'Espresso Machine Pro',
-      description: 'Professional grade espresso maker with 15 bar pressure',
-      price: 399.99,
-      image: '/assets/images/coffee.jpg',
-      category: 'Electronics',
-      stock: 20,
-      rating: 4.8,
-      createdAt: moment('2026-01-02').unix(),
-      updatedAt: moment('2026-01-02').unix(),
-    };
-
-    const response = await firstValueFrom(service.put('/api/test', id, newProduct));
-
-    expect(response).toEqual(newProduct);
-    expect(response.stock).toBe(newProduct.stock);
-    expect(response.price).toBe(newProduct.price);
-  });
-
-  it('should delete data correctly', async () => {
-    const id = Utils.generateId();
-
-    const product = {
-      id: id,
-      name: 'Espresso Machine Pro',
-      description: 'Professional grade espresso maker with 15 bar pressure',
-      price: 499.99,
-      image: '/assets/images/coffee.jpg',
-      category: 'Electronics',
-      stock: 15,
-      rating: 4.8,
-      createdAt: moment('2026-01-02').unix(),
-      updatedAt: moment('2026-01-02').unix(),
-    };
-
-    vi.spyOn(STORAGE_MOCK, 'get').mockReturnValue([product]);
-    vi.spyOn(service, 'delete');
-
-    await firstValueFrom(service.delete('/api/test', id));
-
-    expect(service.delete).toHaveBeenCalledTimes(1);
+                        // Delete item
+                        httpService.delete(testCollection, retrievedItem.id!).subscribe({
+                          next: () => {
+                            // Verify deletion
+                            httpService
+                              .getById<TestItem>(testCollection, retrievedItem.id!)
+                              .subscribe({
+                                next: () => reject(new Error('Item should have been deleted')),
+                                error: () => resolve(), // Expected error
+                              });
+                          },
+                          error: reject,
+                        });
+                      } catch (error) {
+                        reject(error);
+                      }
+                    },
+                    error: reject,
+                  });
+                },
+                error: reject,
+              });
+          },
+          error: reject,
+        });
+      });
+    });
   });
 });

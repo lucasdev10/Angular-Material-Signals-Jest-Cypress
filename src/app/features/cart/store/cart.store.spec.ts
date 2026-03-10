@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { StorageService } from '@app/core/storage/storage';
 import { IProduct } from '@app/features/products/models/product.model';
+import { DateUtils } from '@app/shared';
 import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
 import { CartStore } from './cart.store';
 
 describe('CartStore', () => {
@@ -17,8 +17,8 @@ describe('CartStore', () => {
     category: 'Food',
     stock: 50,
     rating: 4.5,
-    createdAt: moment('2026-01-01').unix(),
-    updatedAt: moment('2026-01-01').unix(),
+    createdAt: DateUtils.fromDate(2026, 1, 1),
+    updatedAt: DateUtils.fromDate(2026, 1, 1),
   };
 
   const mockProduct2: IProduct = {
@@ -30,8 +30,8 @@ describe('CartStore', () => {
     category: 'Electronics',
     stock: 10,
     rating: 4.8,
-    createdAt: moment('2026-01-02').unix(),
-    updatedAt: moment('2026-01-02').unix(),
+    createdAt: DateUtils.fromDate(2026, 1, 2),
+    updatedAt: DateUtils.fromDate(2026, 1, 2),
   };
 
   beforeEach(() => {

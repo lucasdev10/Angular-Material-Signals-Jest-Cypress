@@ -4,8 +4,8 @@ import { provideRouter, Router } from '@angular/router';
 import { ICreateProductDto, IProduct } from '@app/features/products/models/product.model';
 import { ProductRepository } from '@app/features/products/repositories/product.repository';
 import { ProductStore } from '@app/features/products/store/product.store';
+import { DateUtils } from '@app/shared';
 import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
 import { of } from 'rxjs';
 import { AdminProductsPageComponent } from './admin-products-page';
 
@@ -36,8 +36,8 @@ describe('AdminProductsPageComponent', () => {
       category: 'Food',
       stock: 50,
       rating: 4.5,
-      createdAt: moment('2026-01-01').unix(),
-      updatedAt: moment('2026-01-01').unix(),
+      createdAt: DateUtils.fromDate(2026, 1, 1),
+      updatedAt: DateUtils.fromDate(2026, 1, 1),
     },
     {
       id: Utils.generateId(),
@@ -48,8 +48,8 @@ describe('AdminProductsPageComponent', () => {
       category: 'Electronics',
       stock: 5,
       rating: 4.0,
-      createdAt: moment('2026-01-01').unix(),
-      updatedAt: moment('2026-01-01').unix(),
+      createdAt: DateUtils.fromDate(2026, 1, 1),
+      updatedAt: DateUtils.fromDate(2026, 1, 1),
     },
     {
       id: Utils.generateId(),
@@ -60,8 +60,8 @@ describe('AdminProductsPageComponent', () => {
       category: 'Clothing',
       stock: 0,
       rating: 3.5,
-      createdAt: moment('2026-01-01').unix(),
-      updatedAt: moment('2026-01-01').unix(),
+      createdAt: DateUtils.fromDate(2026, 1, 1),
+      updatedAt: DateUtils.fromDate(2026, 1, 1),
     },
   ];
 
@@ -92,8 +92,8 @@ describe('AdminProductsPageComponent', () => {
       ...product,
       id: Utils.generateId(),
       rating: 0,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     };
 
     vi.spyOn(repository, 'create').mockReturnValue(of(newProduct));

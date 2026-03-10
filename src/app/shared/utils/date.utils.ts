@@ -1,76 +1,107 @@
+import { format, formatDistanceToNow, getUnixTime, parseISO } from 'date-fns';
+
 /**
  * Utilitários para manipulação de datas
+ * Substitui moment.js por date-fns para melhor performance e menor bundle size
  */
 export class DateUtils {
   /**
-   * Formata data para string legível
+   * Converte data para timestamp Unix
    */
-  static format(date: Date | string, format = 'dd/MM/yyyy'): string {
-    const d = typeof date === 'string' ? new Date(date) : date;
+  static toUnixTime(date?: Date | string | number): number {
+    if (!date) {
+      return getUnixTime(new Date());
+    }
 
-    const day = String(d.getUTCDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    const seconds = String(d.getSeconds()).padStart(2, '0');
+    if (typeof date === 'string') {
+      return getUnixTime(parseISO(date));
+    }
 
-    return format
-      .replace('dd', day)
-      .replace('MM', month)
-      .replace('yyyy', String(year))
-      .replace('HH', hours)
-      .replace('mm', minutes)
-      .replace('ss', seconds);
+    if (typeof date === 'number') {
+      return date; // Já é timestamp
+    }
+
+    return getUnixTime(date);
   }
 
   /**
-   * Adiciona dias a uma data
+   * Cria timestamp Unix da data atual
    */
-  static addDays(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
+  static now(): number {
+    return getUnixTime(new Date());
   }
 
   /**
-   * Subtrai dias de uma data
+   * Cria timestamp Unix de uma data específica
    */
-  static subtractDays(date: Date, days: number): Date {
-    return this.addDays(date, -days);
+  static fromDate(year: number, month: number, day: number): number {
+    return getUnixTime(new Date(year, month - 1, day)); // month is 0-indexed
   }
 
   /**
-   * Verifica se uma data é hoje
+   * Converte timestamp Unix para Date
    */
-  static isToday(date: Date): boolean {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
+  static fromUnixTime(timestamp: number): Date {
+    return new Date(timestamp * 1000);
   }
 
   /**
-   * Verifica se uma data está no passado
+   * Formata data para string
    */
-  static isPast(date: Date): boolean {
-    return date < new Date();
+  static format(date: Date | number, formatString = 'yyyy-MM-dd'): string {
+    const dateObj = typeof date === 'number' ? DateUtils.fromUnixTime(date) : date;
+    return format(dateObj, formatString);
   }
 
   /**
-   * Verifica se uma data está no futuro
+   * Retorna tempo relativo (ex: "2 hours ago")
    */
-  static isFuture(date: Date): boolean {
-    return date > new Date();
+  static timeAgo(date: Date | number): string {
+    const dateObj = typeof date === 'number' ? DateUtils.fromUnixTime(date) : date;
+    return formatDistanceToNow(dateObj, { addSuffix: true });
   }
 
   /**
-   * Calcula diferença em dias entre duas datas
+   * Verifica se uma data é válida
    */
-  static daysBetween(date1: Date, date2: Date): number {
-    const oneDay = 24 * 60 * 60 * 1000;
-    return Math.round(Math.abs((date1.getTime() - date2.getTime()) / oneDay));
+  static isValid(date: unknown): boolean {
+    if (!date) return false;
+
+    // Se já é um objeto Date, verifica se é válido
+    if (date instanceof Date) {
+      return !isNaN(date.getTime());
+    }
+
+    // Se é string, verifica formato e validade
+    if (typeof date === 'string') {
+      const regexDateValid =
+        /^(?:\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))(?:T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.\d{3}Z)?$/;
+
+      if (!regexDateValid.test(date)) return false;
+
+      const dateObj = new Date(date);
+      return !isNaN(dateObj.getTime());
+    }
+
+    // Se é número, verifica se é um timestamp válido (deve ser maior que 0 e razoável)
+    if (typeof date === 'number') {
+      // Timestamps válidos devem estar em uma faixa razoável
+      // Considerando que timestamps menores que 1970 (ano 0 Unix) não são válidos
+      // E timestamps muito pequenos (< 1000000) provavelmente não são timestamps reais
+      const minTimestamp = 1000000; // ~11 dias após 1970, mais realista
+      const maxTimestamp = 4102444800; // 1º de janeiro de 2100 em segundos Unix
+      const maxTimestampMs = maxTimestamp * 1000; // Em milissegundos
+
+      // Verifica se está em uma faixa razoável (segundos ou milissegundos)
+      const isValidRange = date >= minTimestamp && date <= maxTimestampMs;
+
+      if (!isValidRange) return false;
+
+      const dateObj = new Date(date);
+      return !isNaN(dateObj.getTime());
+    }
+
+    // Para outros tipos, retorna false
+    return false;
   }
 }

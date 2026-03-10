@@ -4,7 +4,7 @@
 export interface IUser {
   id: string;
   email: string;
-  password: string;
+  password?: string;
   fullName: string;
   role: EUserRole;
   createdAt: number;

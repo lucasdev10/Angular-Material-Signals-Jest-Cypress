@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { CartStore } from '@app/features/cart/store/cart.store';
 import { IProduct } from '@app/features/products/models/product.model';
+import { DateUtils } from '@app/shared';
 import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
 import { HeaderComponent } from './header';
 
 describe('HeaderComponent', () => {
@@ -20,8 +20,8 @@ describe('HeaderComponent', () => {
     category: 'Food',
     stock: 50,
     rating: 4.5,
-    createdAt: moment('2026-01-01').unix(),
-    updatedAt: moment('2026-01-01').unix(),
+    createdAt: DateUtils.fromDate(2026, 1, 1),
+    updatedAt: DateUtils.fromDate(2026, 1, 1),
   };
 
   beforeEach(async () => {

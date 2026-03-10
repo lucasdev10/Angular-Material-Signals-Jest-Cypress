@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpService } from '@app/core/http/http';
-import moment from 'moment';
+import { IRepository } from '@app/shared/interfaces/repository.interface';
+import { DateUtils } from '@app/shared/utils/date.utils';
 import { Observable } from 'rxjs';
 import { ICreateProductDto, IProduct, IUpdateProductDto } from '../models/product.model';
 
@@ -11,7 +12,11 @@ import { ICreateProductDto, IProduct, IUpdateProductDto } from '../models/produc
 @Injectable({
   providedIn: 'root',
 })
-export class ProductRepository {
+export class ProductRepository implements IRepository<
+  IProduct,
+  ICreateProductDto,
+  IUpdateProductDto
+> {
   private readonly http = inject(HttpService);
   private readonly COLLECTION_KEY = 'products';
 
@@ -37,8 +42,8 @@ export class ProductRepository {
       ...dto,
       image: dto.image || '/assets/images/coffee.jpg',
       rating: 0,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     };
 
     return this.http.post<IProduct>(this.COLLECTION_KEY, product as IProduct);
@@ -50,7 +55,7 @@ export class ProductRepository {
   update(id: string, dto: IUpdateProductDto): Observable<IProduct> {
     const updateData: Partial<IProduct> = {
       ...dto,
-      updatedAt: moment().unix(),
+      updatedAt: DateUtils.now(),
     };
 
     return this.http.put<IProduct>(this.COLLECTION_KEY, id, updateData as IProduct);

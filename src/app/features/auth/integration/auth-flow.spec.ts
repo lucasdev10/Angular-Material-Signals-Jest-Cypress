@@ -4,7 +4,7 @@ import { StorageService } from '@app/core/storage/storage';
 import { AuthRepository } from '@app/features/auth/repositories/auth.repository';
 import { AuthStore } from '@app/features/auth/store/auth.store';
 import { EUserRole } from '@app/features/user/models/user.model';
-import moment from 'moment';
+import { DateUtils } from '@app/shared';
 import { of, Subject, throwError } from 'rxjs';
 
 /**
@@ -23,8 +23,8 @@ describe('Authentication Flow Integration Tests', () => {
     password: 'hashed',
     fullName: 'Admin User',
     role: EUserRole.ADMIN,
-    createdAt: moment().unix(),
-    updatedAt: moment().unix(),
+    createdAt: DateUtils.now(),
+    updatedAt: DateUtils.now(),
   };
 
   const mockRegularUser = {
@@ -33,8 +33,8 @@ describe('Authentication Flow Integration Tests', () => {
     password: 'hashed',
     fullName: 'Regular User',
     role: EUserRole.USER,
-    createdAt: moment().unix(),
-    updatedAt: moment().unix(),
+    createdAt: DateUtils.now(),
+    updatedAt: DateUtils.now(),
   };
 
   beforeEach(() => {

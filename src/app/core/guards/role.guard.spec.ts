@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AuthStore } from '@app/features/auth/store/auth.store';
 import { EUserRole, IUser } from '@app/features/user/models/user.model';
-import moment from 'moment';
+import { DateUtils } from '@app/shared';
 import { roleGuard } from './role.guard';
 
 describe('roleGuard', () => {
@@ -16,8 +16,8 @@ describe('roleGuard', () => {
     password: 'hashed',
     fullName: 'Admin User',
     role: EUserRole.ADMIN,
-    createdAt: moment().unix(),
-    updatedAt: moment().unix(),
+    createdAt: DateUtils.now(),
+    updatedAt: DateUtils.now(),
   };
 
   const mockRegularUser: IUser = {
@@ -26,8 +26,8 @@ describe('roleGuard', () => {
     password: 'hashed',
     fullName: 'Regular User',
     role: EUserRole.USER,
-    createdAt: moment().unix(),
-    updatedAt: moment().unix(),
+    createdAt: DateUtils.now(),
+    updatedAt: DateUtils.now(),
   };
 
   beforeEach(() => {

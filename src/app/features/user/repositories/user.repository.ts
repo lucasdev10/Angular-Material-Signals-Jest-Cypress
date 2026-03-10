@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpService } from '@app/core/http/http';
-import moment from 'moment';
+import { DateUtils } from '@app/shared';
 import { Observable } from 'rxjs';
 import { ICreateUserDto, IUpdateUserDto, IUser } from '../models/user.model';
 
@@ -35,8 +35,8 @@ export class UserRepository {
   create(dto: ICreateUserDto): Observable<IUser> {
     const user: Partial<IUser> = {
       ...dto,
-      createdAt: moment().unix(),
-      updatedAt: moment().unix(),
+      createdAt: DateUtils.now(),
+      updatedAt: DateUtils.now(),
     };
 
     return this.http.post<IUser>(this.COLLECTION_KEY, user as IUser);
@@ -48,7 +48,7 @@ export class UserRepository {
   update(id: string, dto: IUpdateUserDto): Observable<IUser> {
     const updateData: Partial<IUser> = {
       ...dto,
-      updatedAt: moment().unix(),
+      updatedAt: DateUtils.now(),
     };
 
     return this.http.put<IUser>(this.COLLECTION_KEY, id, updateData as IUser);

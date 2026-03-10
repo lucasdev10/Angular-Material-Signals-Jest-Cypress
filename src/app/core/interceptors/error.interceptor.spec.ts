@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { APP_CONFIG } from '@app/shared/config/app.config';
 import { of, throwError } from 'rxjs';
 import { errorInterceptor } from './error.interceptor';
 
@@ -63,7 +64,7 @@ describe('errorInterceptor', () => {
       result$.subscribe({
         error: (err) => {
           expect(err).toBe(error);
-          expect(router.navigate).toHaveBeenCalledWith(['/login']);
+          expect(router.navigate).toHaveBeenCalledWith([APP_CONFIG.routes.LOGIN_REDIRECT]);
           expect(console.error).toHaveBeenCalled();
           resolve();
         },
@@ -88,7 +89,7 @@ describe('errorInterceptor', () => {
       result$.subscribe({
         error: (err) => {
           expect(err).toBe(error);
-          expect(router.navigate).toHaveBeenCalledWith(['/unauthorized']);
+          expect(router.navigate).toHaveBeenCalledWith([APP_CONFIG.routes.UNAUTHORIZED_REDIRECT]);
           expect(console.error).toHaveBeenCalled();
           resolve();
         },

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpService } from '@app/core/http/http';
+import { DateUtils } from '@app/shared';
 import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
 import { of } from 'rxjs';
 import { EUserRole, ICreateUserDto, IUpdateUserDto, IUser } from '../models/user.model';
 import { UserRepository } from './user.repository';
@@ -16,8 +16,8 @@ describe('UserRepository', () => {
     password: 'password123',
     fullName: 'Test User',
     role: EUserRole.USER,
-    createdAt: moment().unix(),
-    updatedAt: moment().unix(),
+    createdAt: DateUtils.now(),
+    updatedAt: DateUtils.now(),
   };
 
   const mockUsers: IUser[] = [mockUser];

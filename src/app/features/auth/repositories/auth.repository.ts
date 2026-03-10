@@ -21,25 +21,37 @@ export class AuthRepository {
     // Simula delay de rede
     return new Observable<IAuthResponse>((observer) => {
       setTimeout(async () => {
-        const users = await firstValueFrom(this.http.get<IUser[]>('users'));
-        const user = users.find(
-          (u) => u.email === credentials.email && u.password === credentials.password,
-        );
+        try {
+          const users = await firstValueFrom(this.http.get<IUser[]>('users'));
+          const user = users.find(
+            (u) => u.email === credentials.email && u.password === credentials.password,
+          );
 
-        if (!user) {
-          observer.error({ message: 'Invalid email or password' });
-          return;
+          if (!user) {
+            observer.error({ message: 'Invalid email or password' });
+            return;
+          }
+
+          const userWithoutPassword = {
+            id: user.id,
+            email: user.email,
+            fullName: user.fullName,
+            role: user.role,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          };
+
+          const response: IAuthResponse = {
+            user: userWithoutPassword,
+            token: `mock-jwt-token-${user.id}`,
+            refreshToken: `mock-refresh-token-${user.id}`,
+          };
+
+          observer.next(response);
+          observer.complete();
+        } catch (error) {
+          observer.error(error);
         }
-
-        const { ...userWithoutPassword } = user;
-        const response: IAuthResponse = {
-          user: userWithoutPassword,
-          token: `mock-jwt-token-${user.id}`,
-          refreshToken: `mock-refresh-token-${user.id}`,
-        };
-
-        observer.next(response);
-        observer.complete();
       }, 1000);
     });
   }
@@ -58,23 +70,35 @@ export class AuthRepository {
     // Simula validação de token
     return new Observable<IUser>((observer) => {
       setTimeout(async () => {
-        if (!token || !token.startsWith('mock-jwt-token-')) {
-          observer.error({ message: 'Token inválido' });
-          return;
+        try {
+          if (!token || !token.startsWith('mock-jwt-token-')) {
+            observer.error({ message: 'Token inválido' });
+            return;
+          }
+
+          const userId = token.replace('mock-jwt-token-', '');
+          const users = await firstValueFrom(this.http.get<IUser[]>('users'));
+          const user = users.find((u) => u.id === userId);
+
+          if (!user) {
+            observer.error({ message: 'User not found' });
+            return;
+          }
+
+          const userWithoutPassword = {
+            id: user.id,
+            email: user.email,
+            fullName: user.fullName,
+            role: user.role,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          };
+
+          observer.next(userWithoutPassword);
+          observer.complete();
+        } catch (error) {
+          observer.error(error);
         }
-
-        const userId = token.replace('mock-jwt-token-', '');
-        const users = await firstValueFrom(this.http.get<IUser[]>('users'));
-        const user = users.find((u) => u.id === userId);
-
-        if (!user) {
-          observer.error({ message: 'User not found' });
-          return;
-        }
-
-        const { ...userWithoutPassword } = user;
-        observer.next(userWithoutPassword);
-        observer.complete();
       }, 500);
     });
   }

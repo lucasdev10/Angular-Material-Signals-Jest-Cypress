@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IProduct } from '@app/features/products/models/product.model';
 import { EUserRole, IUser } from '@app/features/user/models/user.model';
+import { DateUtils } from '@app/shared/utils/date.utils';
 import { Utils } from '@app/shared/utils/utils';
-import moment from 'moment';
 
 export class StorageMock {
   private readonly STORAGE_KEY_PREFIX = 'MOCK_';
@@ -68,8 +68,8 @@ export class MockDataService {
         category: 'Food',
         stock: 50,
         rating: 4.5,
-        createdAt: moment('2026-01-01').unix(),
-        updatedAt: moment('2026-01-01').unix(),
+        createdAt: DateUtils.fromDate(2026, 1, 1),
+        updatedAt: DateUtils.fromDate(2026, 1, 1),
       },
       {
         id: Utils.generateId(),
@@ -80,8 +80,8 @@ export class MockDataService {
         category: 'Electronics',
         stock: 15,
         rating: 4.8,
-        createdAt: moment('2026-01-02').unix(),
-        updatedAt: moment('2026-01-02').unix(),
+        createdAt: DateUtils.fromDate(2026, 1, 2),
+        updatedAt: DateUtils.fromDate(2026, 1, 2),
       },
       {
         id: Utils.generateId(),
@@ -92,8 +92,8 @@ export class MockDataService {
         category: 'Electronics',
         stock: 8,
         rating: 4.3,
-        createdAt: moment('2026-01-03').unix(),
-        updatedAt: moment('2026-01-03').unix(),
+        createdAt: DateUtils.fromDate(2026, 1, 3),
+        updatedAt: DateUtils.fromDate(2026, 1, 3),
       },
     ];
 
@@ -107,8 +107,8 @@ export class MockDataService {
         password: 'admin123',
         fullName: 'Admin User',
         role: EUserRole.ADMIN,
-        createdAt: moment('2026-01-01').unix(),
-        updatedAt: moment('2026-01-01').unix(),
+        createdAt: DateUtils.fromDate(2026, 1, 1),
+        updatedAt: DateUtils.fromDate(2026, 1, 1),
       },
       {
         id: Utils.generateId(),
@@ -116,8 +116,8 @@ export class MockDataService {
         password: 'user123',
         fullName: 'Regular User',
         role: EUserRole.USER,
-        createdAt: moment('2026-01-02').unix(),
-        updatedAt: moment('2026-01-02').unix(),
+        createdAt: DateUtils.fromDate(2026, 1, 2),
+        updatedAt: DateUtils.fromDate(2026, 1, 2),
       },
     ];
 

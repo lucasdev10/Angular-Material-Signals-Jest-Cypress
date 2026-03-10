@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { StorageService } from '@app/core/storage/storage';
 import { EUserRole } from '@app/features/user/models/user.model';
-import moment from 'moment';
+import { DateUtils } from '@app/shared';
 import { of, throwError } from 'rxjs';
 import type { Mocked } from 'vitest';
 import { AuthRepository } from '../repositories/auth.repository';
@@ -65,8 +65,8 @@ describe('AuthStore', () => {
           password: 'hashed-password',
           fullName: 'Admin User',
           role: EUserRole.ADMIN,
-          createdAt: moment().unix(),
-          updatedAt: moment().unix(),
+          createdAt: DateUtils.now(),
+          updatedAt: DateUtils.now(),
         },
         token: 'mock-token',
       };
@@ -156,8 +156,8 @@ describe('AuthStore', () => {
         password: 'hashed',
         fullName: 'Test User',
         role: EUserRole.USER,
-        createdAt: moment().unix(),
-        updatedAt: moment().unix(),
+        createdAt: DateUtils.now(),
+        updatedAt: DateUtils.now(),
       };
 
       mockStorage.get.mockImplementation((key: string) => {
@@ -249,8 +249,8 @@ describe('AuthStore', () => {
           password: 'hashed',
           fullName: 'Test',
           role: EUserRole.USER,
-          createdAt: moment().unix(),
-          updatedAt: moment().unix(),
+          createdAt: DateUtils.now(),
+          updatedAt: DateUtils.now(),
         },
         token: 'token',
       };
@@ -274,8 +274,8 @@ describe('AuthStore', () => {
           password: 'hashed',
           fullName: 'Admin',
           role: EUserRole.ADMIN,
-          createdAt: moment().unix(),
-          updatedAt: moment().unix(),
+          createdAt: DateUtils.now(),
+          updatedAt: DateUtils.now(),
         },
         token: 'token',
       };
@@ -296,8 +296,8 @@ describe('AuthStore', () => {
           password: 'hashed',
           fullName: 'User',
           role: EUserRole.USER,
-          createdAt: moment().unix(),
-          updatedAt: moment().unix(),
+          createdAt: DateUtils.now(),
+          updatedAt: DateUtils.now(),
         },
         token: 'token',
       };
