@@ -1,3 +1,5 @@
+import { LoadingState } from '@app/shared';
+
 /**
  * Modelo de usuário
  */
@@ -44,4 +46,15 @@ export interface IUserFilters {
 export enum EUserRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
+}
+
+/**
+ * Interface da store de usuários
+ */
+export interface IUserStoreState {
+  users: IUser[];
+  selectedUser: IUser | null;
+  filters: IUserFilters;
+  loading: LoadingState;
+  error: string | null;
 }

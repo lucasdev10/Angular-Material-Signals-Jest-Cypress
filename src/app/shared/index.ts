@@ -37,3 +37,6 @@ export * from './utils/string.utils';
 
 // Decorators
 export * from './decorators/track-performance.decorator';
+
+// Types
+export * from './types/loading-state';
