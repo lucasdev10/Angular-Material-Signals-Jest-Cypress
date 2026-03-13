@@ -7,7 +7,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { UserStore } from './user.store';
 
 describe('UserStore', () => {
-  let userStore: UserStore;
+  let userStore: InstanceType<typeof UserStore>;
   let userRepository: UserRepository;
 
   const mockUsers: IUser[] = [
