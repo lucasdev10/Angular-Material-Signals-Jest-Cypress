@@ -178,7 +178,7 @@ vercel project ls
 
 **Preset do Framework**: Angular  
 **Comando de Build**: `npm run build`  
-**Diretório de Saída**: `dist/Coffee-Workshop/browser`  
+**Diretório de Saída**: `dist/CoffeeWorkshop/browser`  
 **Comando de Instalação**: `npm ci --legacy-peer-deps`
 
 #### 5. Variáveis de Ambiente
@@ -207,7 +207,7 @@ netlify init
 #### 3. Configurar Configurações de Build
 
 **Comando de Build**: `npm run build`  
-**Diretório de Publicação**: `dist/Coffee-Workshop
+**Diretório de Publicação**: `dist/CoffeeWorkshop
 **Branch de Produção**: `main`
 
 #### 4. Criar `netlify.toml`
@@ -215,7 +215,7 @@ netlify init
 ```toml
 [build]
   command = "npm run build"
-  publish = "dist/Coffee-Workshop
+  publish = "dist/CoffeeWorkshop
 
 [[redirects]]
   from = "/*"
@@ -288,7 +288,7 @@ frontend:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: dist/Coffee-Workshop
+    baseDirectory: dist/CoffeeWorkshop
     files:
       - '**/*'
   cache:
@@ -308,7 +308,7 @@ az staticwebapp create \
   --location "East US 2" \
   --branch main \
   --app-location "/" \
-  --output-location "dist/Coffee-Workshop
+  --output-location "dist/CoffeeWorkshop
 ```
 
 #### 2. Configurar Workflow
