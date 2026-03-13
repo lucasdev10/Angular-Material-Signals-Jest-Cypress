@@ -1,6 +1,5 @@
 import { computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { LoadingState } from '@app/shared';
 import {
   patchState,
   signalStore,
@@ -40,16 +39,13 @@ export const UserStore = signalStore(
       const users = store.users();
       const filters = store.filters();
 
+      if (!filters.search) return users;
+
+      const searchLower = filters.search.toLowerCase();
       return users.filter((user) => {
-        if (filters.search) {
-          const searchLower = filters.search.toLowerCase();
-          const matchesName = user.fullName.toLowerCase().includes(searchLower);
-          const matchesDescription = user.email.toLowerCase().includes(searchLower);
-          if (!matchesName && !matchesDescription) {
-            return false;
-          }
-        }
-        return true;
+        const matchesName = user.fullName.toLowerCase().includes(searchLower);
+        const matchesEmail = user.email.toLowerCase().includes(searchLower);
+        return matchesName || matchesEmail;
       });
     });
 
@@ -63,14 +59,14 @@ export const UserStore = signalStore(
   }),
   withMethods((store, repository = inject(UserRepository), destroyRef = inject(DestroyRef)) => ({
     loadUsers(): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .findAll()
         .pipe(takeUntilDestroyed(destroyRef))
         .subscribe({
           next: (users) => {
-            patchState(store, { users, loading: 'success', error: null });
+            patchState(store, { users, loading: 'success' });
           },
           error: (error) => {
             patchState(store, {
@@ -81,14 +77,14 @@ export const UserStore = signalStore(
         });
     },
     loadUserById(id: string): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .findById(id)
         .pipe(takeUntilDestroyed(destroyRef))
         .subscribe({
           next: (user) => {
-            patchState(store, { selectedUser: user, loading: 'success', error: null });
+            patchState(store, { selectedUser: user, loading: 'success' });
           },
           error: (error) => {
             patchState(store, {
@@ -99,7 +95,7 @@ export const UserStore = signalStore(
         });
     },
     createUser(dto: ICreateUserDto): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .create(dto)
@@ -109,7 +105,6 @@ export const UserStore = signalStore(
             patchState(store, {
               users: [...store.users(), user],
               loading: 'success',
-              error: null,
             });
           },
           error: (error) => {
@@ -121,21 +116,17 @@ export const UserStore = signalStore(
         });
     },
     updateUser(id: string, dto: IUpdateUserDto): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .update(id, dto)
         .pipe(takeUntilDestroyed(destroyRef))
         .subscribe({
           next: (updatedUser) => {
-            const users = store.users();
-            const updatedUsers = users.map((u) => (u.id === id ? updatedUser : u));
-
             patchState(store, {
-              users: updatedUsers,
+              users: store.users().map((u) => (u.id === id ? updatedUser : u)),
               selectedUser: store.selectedUser()?.id === id ? updatedUser : store.selectedUser(),
               loading: 'success',
-              error: null,
             });
           },
           error: (error) => {
@@ -147,21 +138,17 @@ export const UserStore = signalStore(
         });
     },
     deleteUser(id: string): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .delete(id)
         .pipe(takeUntilDestroyed(destroyRef))
         .subscribe({
           next: () => {
-            const users = store.users();
-            const updatedUsers = users.filter((u) => u.id !== id);
-
             patchState(store, {
-              users: updatedUsers,
+              users: store.users().filter((u) => u.id !== id),
               selectedUser: store.selectedUser()?.id === id ? null : store.selectedUser(),
               loading: 'success',
-              error: null,
             });
           },
           error: (error) => {
@@ -180,9 +167,6 @@ export const UserStore = signalStore(
     },
     clearError(): void {
       patchState(store, { error: null });
-    },
-    _setLoading(loading: LoadingState): void {
-      patchState(store, { loading });
     },
   })),
   withHooks((store) => ({

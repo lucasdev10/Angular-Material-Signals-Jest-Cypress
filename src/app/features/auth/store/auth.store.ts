@@ -32,12 +32,9 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed((store) => ({
-    user: computed(() => store.user()),
-    token: computed(() => store.token()),
-    isLoading: computed(() => store.loading() === 'loading'),
-    error: computed(() => store.error()),
     isAuthenticated: computed(() => !!store.user() && !!store.token()),
     isAdmin: computed(() => store.user()?.role === EUserRole.ADMIN),
+    isLoading: computed(() => store.loading() === 'loading'),
   })),
   withMethods(
     (
@@ -47,9 +44,6 @@ export const AuthStore = signalStore(
       router = inject(Router),
       destroyRef = inject(DestroyRef),
     ) => ({
-      /**
-       * Inicializa autenticação do localStorage
-       */
       _initializeAuth(): void {
         const token = storage.get('auth_token') as string | null;
         const user = storage.get('auth_user') as IUser | null;
@@ -58,9 +52,6 @@ export const AuthStore = signalStore(
           patchState(store, { token, user });
         }
       },
-      /**
-       * Realiza login
-       */
       login(credentials: ILoginCredentials): void {
         patchState(store, { loading: 'loading', error: null });
 
@@ -69,15 +60,11 @@ export const AuthStore = signalStore(
           .pipe(takeUntilDestroyed(destroyRef))
           .subscribe({
             next: ({ user, token }) => {
-              patchState(store, { user, token });
+              patchState(store, { user, token, loading: 'success' });
 
-              // Persiste no localStorage
               storage.set('auth_token', token);
               storage.set('auth_user', user);
 
-              patchState(store, { loading: 'success' });
-
-              // Redireciona baseado no role
               if (user.role === EUserRole.ADMIN) {
                 router.navigate(['/admin']);
               } else {
@@ -92,9 +79,6 @@ export const AuthStore = signalStore(
             },
           });
       },
-      /**
-       * Realiza logout
-       */
       logout(): void {
         patchState(store, { loading: 'loading' });
 
@@ -107,25 +91,17 @@ export const AuthStore = signalStore(
               router.navigate(['/auth/login']);
             },
             error: () => {
-              // Mesmo com erro, limpa autenticação
               this._clearAuth();
               router.navigate(['/auth/login']);
             },
           });
       },
-      /**
-       * Limpa estado de autenticação
-       */
       _clearAuth(): void {
         patchState(store, { user: null, token: null, loading: 'idle', error: null });
-
         storage.remove('auth_token');
         storage.remove('auth_user');
       },
-      /**
-       * Limpa erro
-       */
-      _clearError(): void {
+      clearError(): void {
         patchState(store, { error: null });
       },
     }),

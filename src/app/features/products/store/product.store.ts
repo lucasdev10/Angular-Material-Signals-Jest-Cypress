@@ -1,6 +1,5 @@
 import { computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { LoadingState } from '@app/shared';
 import {
   patchState,
   signalStore,
@@ -38,29 +37,16 @@ export const ProductStore = signalStore(
       const filters = store.filters();
 
       return products.filter((product) => {
-        if (filters.category && product.category !== filters.category) {
-          return false;
-        }
-
-        if (filters.minPrice && product.price < filters.minPrice) {
-          return false;
-        }
-
-        if (filters.maxPrice && product.price > filters.maxPrice) {
-          return false;
-        }
+        if (filters.category && product.category !== filters.category) return false;
+        if (filters.minPrice && product.price < filters.minPrice) return false;
+        if (filters.maxPrice && product.price > filters.maxPrice) return false;
+        if (filters.inStock && product.stock <= 0) return false;
 
         if (filters.search) {
           const searchLower = filters.search.toLowerCase();
           const matchesName = product.name.toLowerCase().includes(searchLower);
           const matchesDescription = product.description.toLowerCase().includes(searchLower);
-          if (!matchesName && !matchesDescription) {
-            return false;
-          }
-        }
-
-        if (filters.inStock && product.stock <= 0) {
-          return false;
+          return matchesName || matchesDescription;
         }
 
         return true;
@@ -69,11 +55,6 @@ export const ProductStore = signalStore(
 
     return {
       filteredProducts,
-      products: computed(() => store.products()),
-      selectedProduct: computed(() => store.selectedProduct()),
-      filters: computed(() => store.filters()),
-      loading: computed(() => store.loading()),
-      error: computed(() => store.error()),
       isLoading: computed(() => store.loading() === 'loading'),
       hasError: computed(() => store.error() !== null),
       productCount: computed(() => store.products().length),
@@ -86,18 +67,14 @@ export const ProductStore = signalStore(
   }),
   withMethods((store, repository = inject(ProductRepository), destroyRef = inject(DestroyRef)) => ({
     loadProducts(): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .findAll()
         .pipe(takeUntilDestroyed(destroyRef))
         .subscribe({
           next: (products) => {
-            patchState(store, {
-              products,
-              loading: 'success',
-              error: null,
-            });
+            patchState(store, { products, loading: 'success' });
           },
           error: (error) => {
             patchState(store, {
@@ -108,18 +85,14 @@ export const ProductStore = signalStore(
         });
     },
     loadProductById(id: string): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .findById(id)
         .pipe(takeUntilDestroyed(destroyRef))
         .subscribe({
           next: (product) => {
-            patchState(store, {
-              selectedProduct: product,
-              loading: 'success',
-              error: null,
-            });
+            patchState(store, { selectedProduct: product, loading: 'success' });
           },
           error: (error) => {
             patchState(store, {
@@ -130,7 +103,7 @@ export const ProductStore = signalStore(
         });
     },
     createProduct(dto: ICreateProductDto): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .create(dto)
@@ -140,7 +113,6 @@ export const ProductStore = signalStore(
             patchState(store, {
               products: [...store.products(), product],
               loading: 'success',
-              error: null,
             });
           },
           error: (error) => {
@@ -152,7 +124,7 @@ export const ProductStore = signalStore(
         });
     },
     updateProduct(id: string, dto: Partial<IProduct>): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .update(id, dto)
@@ -164,7 +136,6 @@ export const ProductStore = signalStore(
               selectedProduct:
                 store.selectedProduct()?.id === id ? updatedProduct : store.selectedProduct(),
               loading: 'success',
-              error: null,
             });
           },
           error: (error) => {
@@ -176,7 +147,7 @@ export const ProductStore = signalStore(
         });
     },
     deleteProduct(id: string): void {
-      this._setLoading('loading');
+      patchState(store, { loading: 'loading', error: null });
 
       repository
         .delete(id)
@@ -187,7 +158,6 @@ export const ProductStore = signalStore(
               products: store.products().filter((p) => p.id !== id),
               selectedProduct: store.selectedProduct()?.id === id ? null : store.selectedProduct(),
               loading: 'success',
-              error: null,
             });
           },
           error: (error) => {
@@ -204,19 +174,10 @@ export const ProductStore = signalStore(
       });
     },
     clearFilters(): void {
-      patchState(store, {
-        filters: {},
-      });
+      patchState(store, { filters: {} });
     },
     clearError(): void {
-      patchState(store, {
-        error: null,
-      });
-    },
-    _setLoading(loading: LoadingState): void {
-      patchState(store, {
-        loading,
-      });
+      patchState(store, { error: null });
     },
   })),
   withHooks((store) => ({

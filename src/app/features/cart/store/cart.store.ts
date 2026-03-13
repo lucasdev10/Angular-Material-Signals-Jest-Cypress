@@ -32,12 +32,6 @@ export const CartStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed((store, cartDomainService = inject(CartDomainService)) => ({
-    items: computed(() => store.items()),
-    subtotal: computed(() => store.subtotal()),
-    shipping: computed(() => store.shipping()),
-    tax: computed(() => store.tax()),
-    total: computed(() => store.total()),
-    itemCount: computed(() => store.itemCount()),
     isEmpty: computed(() => store.items().length === 0),
     hasItems: computed(() => store.items().length > 0),
     hasFreeShipping: computed(() => cartDomainService.qualifiesForFreeShipping(store.subtotal())),
@@ -52,7 +46,6 @@ export const CartStore = signalStore(
       storageService = inject(StorageService),
     ) => ({
       addItem(product: IProduct, quantity = 1): void {
-        // Usar domain service para validar se pode adicionar o produto
         const validationResult = cartDomainService.canAddProductToCart(
           product.id,
           quantity,
@@ -61,7 +54,8 @@ export const CartStore = signalStore(
         );
 
         if (!validationResult.isValid) {
-          throw new Error(validationResult.errors.join('; '));
+          patchState(store, { error: validationResult.errors.join('; ') });
+          return;
         }
 
         const currentItems = store.items();
@@ -73,7 +67,6 @@ export const CartStore = signalStore(
           const existingItem = currentItems[existingItemIndex];
           const newQuantity = existingItem.quantity + quantity;
 
-          // Atualiza quantidade do item existente
           updatedItems = currentItems.map((item, index) =>
             index === existingItemIndex
               ? {
@@ -84,7 +77,6 @@ export const CartStore = signalStore(
               : item,
           );
         } else {
-          // Adiciona novo item
           const newItem: ICartItem = {
             product,
             quantity,
@@ -97,7 +89,8 @@ export const CartStore = signalStore(
       },
       removeItem(productId: string): void {
         if (!productId?.trim()) {
-          throw new Error('Product ID is required');
+          patchState(store, { error: 'Product ID is required' });
+          return;
         }
 
         const updatedItems = store.items().filter((item) => item.product.id !== productId);
@@ -105,7 +98,8 @@ export const CartStore = signalStore(
       },
       updateQuantity(productId: string, quantity: number): void {
         if (!productId?.trim()) {
-          throw new Error('Product ID is required');
+          patchState(store, { error: 'Product ID is required' });
+          return;
         }
 
         if (quantity === 0) {
@@ -117,20 +111,20 @@ export const CartStore = signalStore(
         const existingItem = currentItems.find((item) => item.product.id === productId);
 
         if (!existingItem) {
-          throw new Error('Product not found in cart');
+          patchState(store, { error: 'Product not found in cart' });
+          return;
         }
 
-        // Criar um item temporário para validação
         const tempItem: ICartItem = {
           ...existingItem,
           quantity,
           subtotal: existingItem.product.price * quantity,
         };
 
-        // Usar domain service para validar o item
         const validationResult = cartDomainService.validateCartItem(tempItem);
         if (!validationResult.isValid) {
-          throw new Error(validationResult.errors.join('; '));
+          patchState(store, { error: validationResult.errors.join('; ') });
+          return;
         }
 
         const updatedItems = currentItems.map((item) =>
@@ -161,13 +155,14 @@ export const CartStore = signalStore(
         this._updateCart([]);
       },
       _updateCart(items: ICartItem[]): void {
-        // Validar o carrinho usando domain service
         const validationResult = cartDomainService.validateCart(items);
         if (!validationResult.isValid) {
-          throw new Error(`Cart validation failed: ${validationResult.errors.join('; ')}`);
+          patchState(store, {
+            error: `Cart validation failed: ${validationResult.errors.join('; ')}`,
+          });
+          return;
         }
 
-        // Usar domain service para calcular totais
         const calculations = cartDomainService.calculateCartTotals(items);
 
         patchState(store, {
@@ -177,6 +172,7 @@ export const CartStore = signalStore(
           tax: calculations.tax,
           total: calculations.total,
           itemCount: calculations.itemCount,
+          error: null,
         });
       },
       _loadFromStorage(): ICart {
@@ -215,23 +211,8 @@ export const CartStore = signalStore(
         const item = this.getItemByProductId(productId);
         return item?.quantity || 0;
       },
-      formatCurrency(amount: number): string {
-        return cartDomainService.formatCurrency(amount);
-      },
-      validateCurrentCart(): { isValid: boolean; errors: string[] } {
-        return cartDomainService.validateCart(store.items());
-      },
-      canAddProduct(
-        productId: string,
-        quantity: number,
-        productStock: number,
-      ): { isValid: boolean; errors: string[] } {
-        return cartDomainService.canAddProductToCart(
-          productId,
-          quantity,
-          store.items(),
-          productStock,
-        );
+      clearError(): void {
+        patchState(store, { error: null });
       },
     }),
   ),
