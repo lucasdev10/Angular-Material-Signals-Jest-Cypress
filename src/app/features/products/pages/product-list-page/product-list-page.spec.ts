@@ -11,7 +11,7 @@ import { ProductListPageComponent } from './product-list-page';
 describe('ProductListPageComponent', () => {
   let component: ProductListPageComponent;
   let fixture: ComponentFixture<ProductListPageComponent>;
-  let productStore: ProductStore;
+  let productStore: InstanceType<typeof ProductStore>;
   let cartStore: CartStore;
   let productRepository: ProductRepository;
 

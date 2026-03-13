@@ -1,3 +1,5 @@
+import { LoadingState } from '@app/shared';
+
 /**
  * Modelo de domínio para Produto
  */
@@ -47,4 +49,15 @@ export interface IProductFilters {
   maxPrice?: number;
   search?: string;
   inStock?: boolean;
+}
+
+/**
+ * Interface da store de produtos
+ */
+export interface IProductStoreState {
+  products: IProduct[];
+  selectedProduct: IProduct | null;
+  filters: IProductFilters;
+  loading: LoadingState;
+  error: string | null;
 }

@@ -7,7 +7,7 @@ import { ProductRepository } from '../repositories/product.repository';
 import { ProductStore } from './product.store';
 
 describe('ProductStore', () => {
-  let productStore: ProductStore;
+  let productStore: InstanceType<typeof ProductStore>;
   let productRepository: ProductRepository;
 
   let mockProducts: IProduct[] = [

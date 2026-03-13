@@ -12,7 +12,7 @@ import { AdminProductsPageComponent } from './admin-products-page';
 describe('AdminProductsPageComponent', () => {
   let component: AdminProductsPageComponent;
   let fixture: ComponentFixture<AdminProductsPageComponent>;
-  let storeProduct: ProductStore;
+  let storeProduct: InstanceType<typeof ProductStore>;
   let repository: ProductRepository;
   let dialog: MatDialog;
   let router: Router;

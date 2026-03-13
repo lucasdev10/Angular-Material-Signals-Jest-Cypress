@@ -7,7 +7,7 @@ import { AdminProductFormPageComponent } from './admin-product-form-page';
 describe('AdminProductFormPageComponent', () => {
   let component: AdminProductFormPageComponent;
   let fixture: ComponentFixture<AdminProductFormPageComponent>;
-  let productStore: ProductStore;
+  let productStore: InstanceType<typeof ProductStore>;
   let repository: ProductRepository;
 
   beforeEach(async () => {

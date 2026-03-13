@@ -12,7 +12,7 @@ import { of } from 'rxjs';
  * Testa a interação entre ProductStore e CartStore
  */
 describe('Product Flow Integration Tests', () => {
-  let productStore: ProductStore;
+  let productStore: InstanceType<typeof ProductStore>;
   let cartStore: CartStore;
   let productRepository: ProductRepository;
 
