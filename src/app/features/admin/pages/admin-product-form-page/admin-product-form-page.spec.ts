@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ProductRepository } from '@app/features/products/repositories/product.repository';
-import { initialProductState, ProductFacade } from '@app/features/products/store';
+import { initialProductState, ProductFacade, selectProducts } from '@app/features/products/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { firstValueFrom } from 'rxjs';
 import { AdminProductFormPageComponent } from './admin-product-form-page';
@@ -93,9 +93,14 @@ describe('AdminProductFormPageComponent', () => {
     // Act
     component.onSubmit();
 
+    store.overrideSelector(selectProducts, [
+      { ...formData, id: 'product-id-1', createdAt: 1773778252, updatedAt: 1773778252, rating: 0 },
+    ]);
+    store.refreshState();
+
     // Assert
     let newProducts = await firstValueFrom(productFacade.products$);
 
-    expect(products.length).toBe(0);
+    expect(newProducts.length).toBe(1);
   });
 });
