@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable, of, throwError } from 'rxjs';
-import { EUserRole, IUser } from '../models/user.model';
-import { UserRepository } from '../repositories/user.repository';
-import { UserActions } from './user.actions';
+import { EUserRole, IUser } from '../../models/user.model';
+import { UserRepository } from '../../repositories/user.repository';
+import { UserActions } from '../user.actions';
 import { UserEffects } from './user.effects';
 
 describe('UserEffects', () => {

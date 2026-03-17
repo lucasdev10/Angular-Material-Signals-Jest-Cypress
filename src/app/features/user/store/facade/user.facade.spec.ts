@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { EUserRole, IUser } from '../models/user.model';
-import { UserActions } from './user.actions';
-import { UserFacade } from './user.facade';
+import { EUserRole, IUser } from '../../models/user.model';
 import {
   selectError,
   selectFilteredUserCount,
@@ -14,8 +12,10 @@ import {
   selectSelectedUser,
   selectUserCount,
   selectUsers,
-} from './user.selectors';
-import { initialUserState } from './user.state';
+} from '../selectors/user.selectors';
+import { UserActions } from '../user.actions';
+import { initialUserState } from '../user.state';
+import { UserFacade } from './user.facade';
 
 describe('UserFacade', () => {
   let facade: UserFacade;

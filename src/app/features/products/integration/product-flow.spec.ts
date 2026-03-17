@@ -75,17 +75,11 @@ describe('Product Flow Integration Tests', () => {
   describe('Browse and Add to Cart Flow', () => {
     it('should load products and add to cart', async () => {
       // Arrange
-      let products: IProduct[] = [];
-
-      // Act - Load products
       productFacade.loadProducts();
 
-      await vi.waitFor(() => {
-        productFacade.products$.subscribe((p) => {
-          products = p;
-          expect(p.length).toBe(2);
-        });
-      });
+      let products = await firstValueFrom(productFacade.products$);
+
+      expect(products.length).toBe(2);
 
       // Act - Add product to cart
       const productToAdd = products[0];
@@ -129,15 +123,11 @@ describe('Product Flow Integration Tests', () => {
 
   describe('Multiple Products in Cart', () => {
     it('should handle multiple products with correct calculations', async () => {
-      let products: IProduct[] = [];
       productFacade.loadProducts();
 
-      await vi.waitFor(() => {
-        productFacade.products$.subscribe((p) => {
-          products = p;
-          expect(p.length).toBe(2);
-        });
-      });
+      let products = await firstValueFrom(productFacade.products$);
+
+      expect(products.length).toBe(2);
 
       // Act - Add multiple products
       cartStore.addItem(products[0], 2); // Coffee: 2 x 29.99 = 59.98
@@ -154,15 +144,11 @@ describe('Product Flow Integration Tests', () => {
 
     it('should update quantities and recalculate totals', async () => {
       // Arrange
-      let products: IProduct[] = [];
       productFacade.loadProducts();
 
-      await vi.waitFor(() => {
-        productFacade.products$.subscribe((p) => {
-          products = p;
-          expect(p.length).toBe(2);
-        });
-      });
+      let products = await firstValueFrom(productFacade.products$);
+
+      expect(products.length).toBe(2);
 
       const product = products[0];
       cartStore.addItem(product, 1);
@@ -246,15 +232,11 @@ describe('Product Flow Integration Tests', () => {
   describe('Price Calculations', () => {
     it('should calculate correct totals with tax and shipping', async () => {
       // Arrange
-      let products: IProduct[] = [];
       productFacade.loadProducts();
 
-      await vi.waitFor(() => {
-        productFacade.products$.subscribe((p) => {
-          products = p;
-          expect(p.length).toBe(2);
-        });
-      });
+      let products = await firstValueFrom(productFacade.products$);
+
+      expect(products.length).toBe(2);
 
       // Act - Add cheap item (should have shipping cost)
       const cheapProduct = products[0]; // 29.99
@@ -275,15 +257,11 @@ describe('Product Flow Integration Tests', () => {
 
     it('should apply free shipping for orders over threshold', async () => {
       // Arrange
-      let products: IProduct[] = [];
       productFacade.loadProducts();
 
-      await vi.waitFor(() => {
-        productFacade.products$.subscribe((p) => {
-          products = p;
-          expect(p.length).toBe(2);
-        });
-      });
+      let products = await firstValueFrom(productFacade.products$);
+
+      expect(products.length).toBe(2);
 
       // Act - Add expensive item (should have free shipping)
       const expensiveProduct = products[1]; // 499.99
@@ -305,15 +283,11 @@ describe('Product Flow Integration Tests', () => {
   describe('Remove from Cart', () => {
     it('should remove item and recalculate totals', async () => {
       // Arrange
-      let products: IProduct[] = [];
       productFacade.loadProducts();
 
-      await vi.waitFor(() => {
-        productFacade.products$.subscribe((p) => {
-          products = p;
-          expect(p.length).toBe(2);
-        });
-      });
+      let products = await firstValueFrom(productFacade.products$);
+
+      expect(products.length).toBe(2);
 
       cartStore.addItem(products[0], 1);
       cartStore.addItem(products[1], 1);

@@ -1,4 +1,5 @@
-import { EUserRole, IUser } from '../models/user.model';
+import { EUserRole, IUser } from '../../models/user.model';
+import { IUserState } from '../user.state';
 import {
   selectError,
   selectFilteredUserCount,
@@ -9,10 +10,9 @@ import {
   selectLoading,
   selectSelectedUser,
   selectUserCount,
-  selectUsers,
   selectUserState,
+  selectUsers,
 } from './user.selectors';
-import { IUserState } from './user.state';
 
 describe('User Selectors', () => {
   const mockUsers: IUser[] = [
