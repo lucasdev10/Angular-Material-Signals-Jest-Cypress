@@ -56,8 +56,8 @@ export const productReducer = createReducer(
   })),
   on(ProductActions.updateProductSuccess, (state, { product }) => ({
     ...state,
-    products: [...state.products, product],
-    selectedProduct: state.selectedProduct?.id === product.id ? product : null,
+    products: state.products.map((p) => (p.id === product.id ? product : p)),
+    selectedProduct: state.selectedProduct?.id === product.id ? product : state.selectedProduct,
     loading: 'success' as const,
   })),
   on(ProductActions.updateProductError, (state, { error }) => ({
@@ -83,7 +83,7 @@ export const productReducer = createReducer(
   })),
   on(ProductActions.setProductFilters, (state, { filters }) => ({
     ...state,
-    filters: { ...state.filters, filters },
+    filters: { ...state.filters, ...filters },
   })),
   on(ProductActions.cleanProductFilters, (state) => ({
     ...state,

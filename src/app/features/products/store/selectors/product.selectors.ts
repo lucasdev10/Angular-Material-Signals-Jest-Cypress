@@ -58,13 +58,15 @@ export const selectFilteredProducts = createSelector(
   },
 );
 
+export const selectFilteredProductCount = createSelector(
+  selectFilteredProducts,
+  (products) => products.length,
+);
+
 export const selectLoading = createSelector(selectProductState, (state) => state.loading);
 
-export const selectIsLoading = createSelector(
-  selectProductState,
-  (state) => state.loading === 'loading',
-);
+export const selectIsLoading = createSelector(selectLoading, (loading) => loading === 'loading');
 
 export const selectError = createSelector(selectProductState, (state) => state.error);
 
-export const selectHasError = createSelector(selectProductState, (state) => state.error !== null);
+export const selectHasError = createSelector(selectError, (error) => error !== null);
